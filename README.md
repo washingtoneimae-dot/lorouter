@@ -61,6 +61,9 @@ which, and section 11 lists the honest limits.
     scripts/text_validation.py      real-text flips, calibration prototype
     scripts/boundary_solutions.py   four mitigations head-to-head (A/B/C/D)
     scripts/build_workbook.py       regenerates performance_data.xlsx
+    assets/profile-moe-demo.mp4     3-minute demo video (hackathon presentation,
+                                    voiceover + visuals; renderable from source
+                                    in the videos project)
 
 ## Honest limits
 
