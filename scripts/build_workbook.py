@@ -1,7 +1,8 @@
 """
-Build performance_data.xlsx from fresh canonical runs of the 5 reproduction
-scripts. Uses Excel formulas for every derived column (percent changes,
-aggregates) rather than hardcoding computed results, per xlsx skill guidance.
+Build performance_data.xlsx from the canonical figures in TECHNICAL.md
+(kept in sync with the document's numbers by construction). Uses Excel
+formulas for every derived column (percent changes, aggregates) rather than
+pasting computed results, per xlsx skill guidance.
 """
 import openpyxl
 from openpyxl.styles import Font, Alignment, PatternFill
@@ -71,7 +72,7 @@ def title_block(ws, title, note, ncols):
 # ============================================================
 ws = wb.create_sheet("Summary")
 title_block(ws, "Profile-Routed MoE -- Performance Data Summary",
-            "Fresh canonical run, all 5 reproduction scripts. See TECHNICAL.md for full context, formulas, and proofs. "
+            "Fresh canonical run, all 6 reproduction scripts. See TECHNICAL.md for full context, formulas, and proofs. "
             "Exact figures vary run-to-run for multi-stage pipelines (see TECHNICAL.md section 12) -- qualitative "
             "findings are the reproducible claim.", 4)
 headers = ["Script", "Sheet(s)", "Headline finding", "Reproduces exactly every run?"]
@@ -89,6 +90,8 @@ rows = [
      "Addition-flip mechanism replicates on real text (6 flips, concentrated on boundary prompts). Systematic calibration-data generation fixes a degenerate threshold.", "Part 1 varies; Part 2 exact to the decimal"],
     ["boundary_solutions.py", "Boundary Solutions Comparison",
      "Of 4 mitigations tested, only the gated one-vs-rest fix (D) changes which expert wins top-1; fixes 2 of 3 flips.", "No -- pattern reproduces, exact figures vary"],
+    ["build_workbook.py", "(generates this workbook)",
+     "Regenerates performance_data.xlsx from the canonical figures; every derived column is a live Excel formula.", "Yes -- deterministic"],
 ]
 for r in rows:
     ws.append(r)

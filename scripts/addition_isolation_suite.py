@@ -1,12 +1,12 @@
 """
 addition_isolation_suite.py
 
-Reproduces TECHNICAL.md sections 2, 3.1-3.3, 3.5:
+Reproduces TECHNICAL.md sections 5, 6.2-6.3, 6.5:
   - Swap isolation (both in the original 4-dim pool and inside an
-    already-provisioned 5-dim pool)
+    already-provisioned 5-dim pool, section_2b)
   - The addition flip test (jointly-retrained profiler vs frozen base)
   - The gated one-vs-rest fix, with properly-calibrated threshold
-  - Multi-seed flip stability + confidence/margin analysis
+  - Multi-seed flip stability
 
 Run: python3 addition_isolation_suite.py
 Expected runtime: ~15-30s on CPU.
@@ -26,7 +26,7 @@ ALL_NAMES_WITH_LAW = sorted(BASE_NAMES + ['law'])
 
 def section_2_swap_isolation():
     print("="*70)
-    print("SECTION 2: Swap Isolation")
+    print("SECTION 5: Swap Isolation")
     print("="*70)
     train, test = generate_dataset(BASE_CLUSTERS)
     experts_before = [build_expert(n, train, test, BASE_NAMES, seed=42) for n in BASE_NAMES]
@@ -75,9 +75,55 @@ def section_2_swap_isolation():
     print()
 
 
+def section_2b_swap_isolation_5dim():
+    """Swap isolation inside an already-provisioned 5-dim pool
+    (TECHNICAL.md section 5, second bullet). Same deliberately-different
+    replacement for the code expert; the other four domains must show
+    exactly 0.00% change and zero routing-decision flips."""
+    print("=" * 70)
+    print("SECTION 5 (5-dim pool): Swap Isolation")
+    print("=" * 70)
+    provisioned = {**BASE_CLUSTERS, 'law': NEW_CLUSTERS['law']}
+    names5 = sorted(provisioned.keys())
+    train5, test5 = generate_dataset(provisioned)
+    experts_before = [build_expert(n, train5, test5, names5, seed=42) for n in names5]
+
+    different_code = MLPRegressor(hidden_layer_sizes=(4,), max_iter=15, random_state=999)
+    different_code.fit(train5['code']['X'], train5['code']['y'])
+    experts_after = [e for e in experts_before if e.name != 'Expert_code']
+    new_code = Expert(name='Expert_code', model=different_code)
+    new_code.calibrate(test5, names5)
+    experts_after = sorted(experts_after + [new_code], key=lambda e: e.name)
+    experts_before = sorted(experts_before, key=lambda e: e.name)
+
+    ep_b = np.array([e.profile for e in experts_before])
+    ep_a = np.array([e.profile for e in experts_after])
+    routing_changes = total = 0
+    for label in names5:
+        ip = np.zeros(len(names5)); ip[names5.index(label)] = 1.0
+        wb, _ = cosine_top1(ip, ep_b)
+        wa, _ = cosine_top1(ip, ep_a)
+        for _ in range(len(test5[label]['X'])):
+            total += 1
+            routing_changes += (experts_before[wb].name != experts_after[wa].name)
+    print(f"Top-1 routing decisions changed after swap: {routing_changes}/{total}")
+
+    print(f"{'domain':12s} {'MSE before':>12s} {'MSE after':>12s} {'change':>10s}")
+    for label in names5:
+        if label == 'code':
+            continue
+        ip = np.zeros(len(names5)); ip[names5.index(label)] = 1.0
+        wb, _ = cosine_top1(ip, ep_b)
+        wa, _ = cosine_top1(ip, ep_a)
+        b = ((test5[label]['y'] - experts_before[wb].predict(test5[label]['X']))**2).mean()
+        a = ((test5[label]['y'] - experts_after[wa].predict(test5[label]['X']))**2).mean()
+        print(f"{label:12s} {b:12.5f} {a:12.5f} {100*(a-b)/b:+9.2f}%")
+    print("NOTE: same isolation property as the 4-dim case -- collateral changes ~0 by construction.\n")
+
+
 def section_3_addition_and_gating():
     print("="*70)
-    print("SECTION 3.1-3.3: Addition flips + gated fix")
+    print("SECTION 6.2-6.3: Addition flips + gated fix")
     print("="*70)
     domains = {**BASE_CLUSTERS, 'law': NEW_CLUSTERS['law']}
     train, test = generate_dataset(domains)
@@ -176,7 +222,7 @@ def section_3_addition_and_gating():
 
 def section_3_5_multi_seed_stability():
     print("="*70)
-    print("SECTION 3.5: Multi-seed flip stability")
+    print("SECTION 6.5: Multi-seed flip stability")
     print("="*70)
     domains = {**BASE_CLUSTERS, 'law': NEW_CLUSTERS['law']}
     train, test = generate_dataset(domains, train_seed=42, test_seed=142)
@@ -225,5 +271,6 @@ def section_3_5_multi_seed_stability():
 
 if __name__ == '__main__':
     section_2_swap_isolation()
+    section_2b_swap_isolation_5dim()
     section_3_addition_and_gating()
     section_3_5_multi_seed_stability()

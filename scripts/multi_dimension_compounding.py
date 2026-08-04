@@ -1,7 +1,7 @@
 """
 multi_dimension_compounding.py
 
-Reproduces TECHNICAL.md section 4: adding M new domains simultaneously,
+Reproduces TECHNICAL.md section 7: adding M new domains simultaneously,
 each with an independently-calibrated 1%-FPR gate, does not preserve a 1%
 AGGREGATE false-capture rate on old-domain data -- it compounds. Also checks
 whether Bonferroni-style threshold correction restores the target rate, and

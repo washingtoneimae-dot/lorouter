@@ -340,6 +340,40 @@ def main():
     print("D should appear, fixing most but not necessarily all flips -- see")
     print("TECHNICAL.md section 6.3 for which cases are provably fixable vs. genuinely ambiguous.")
 
+    adaptive_tau_localization_stats(test_data, profiler_v2, experts_v2)
+
+
+def adaptive_tau_localization_stats(test_data, profiler_v2, experts_v2, base_tau=0.1):
+    """TECHNICAL.md section 6.6: how localized is the adaptive-tau cost?
+    Computed across all 750 test points (5 domains x 150): tau is affine
+    in the top1-top2 similarity gap below 1.0 and flat above it, so the
+    correlation is deterministic by construction."""
+    ep = np.array([e.profile for e in experts_v2])
+    ep_n = ep / (np.linalg.norm(ep, axis=1, keepdims=True) + 1e-8)
+    taus, gaps = [], []
+    for cn, cd in test_data.items():
+        for i in range(len(cd['X'])):
+            ip = profiler_v2.predict_profile(cd['X'][i])[0]
+            ip_n = ip / (np.linalg.norm(ip) + 1e-8)
+            sims = np.dot(ep_n, ip_n)
+            s = np.sort(sims)[::-1]
+            gap = s[0] - s[1]
+            taus.append(base_tau + (1.0 - base_tau) * (1.0 - min(gap, 1.0)))
+            gaps.append(gap)
+    taus, gaps = np.array(taus), np.array(gaps)
+    within_2x = np.mean(taus <= 2 * base_tau) * 100
+    softened = np.mean(taus > 0.5) * 100
+    r = np.corrcoef(taus, gaps)[0, 1]
+    print("=" * 70)
+    print("ADAPTIVE-TAU LOCALIZATION (cost is boundary-localized, not a blanket tax)")
+    print("=" * 70)
+    print(f"Across {len(taus)} test points:")
+    print(f"  {within_2x:.1f}% of requests keep tau within 2x of baseline (essentially undisturbed)")
+    print(f"  {softened:.1f}% get substantially softened (tau > 0.5)")
+    print(f"  correlation between tau and the top1-top2 similarity gap: r = {r:.4f}")
+    print("  (tau is affine-decreasing in the gap below 1.0 and flat above it, so")
+    print("   the correlation is deterministic by formula construction, not empirical)")
+
 
 if __name__ == '__main__':
     main()
