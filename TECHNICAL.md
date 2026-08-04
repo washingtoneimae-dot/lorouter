@@ -62,7 +62,7 @@ $$\text{MSE}_i(d) = \frac{1}{|B_d|}\sum_{(x,y)\in B_d} (y - f_i(x))^2$$
 
 $$p_i[d] = \frac{1/(\text{MSE}_i(d) + \epsilon)}{\sum_{d' \in D} 1/(\text{MSE}_i(d') + \epsilon)}$$
 
-(Implementation: `Expert.calibrate()` in `scripts/shared_data.py`.)
+(Implementation: `Expert.calibrate()` in `shared_data.py`.)
 
 **4.2 Routing.** Cosine similarity between input profile and each expert's profile:
 
@@ -72,7 +72,7 @@ Top-k selection, softmax-weighted blend at temperature $\tau$:
 
 $$w_i(x) = \frac{\exp(\text{sim}(x,e_i)/\tau)}{\sum_{j \in \text{top-}k(x)} \exp(\text{sim}(x,e_j)/\tau)}, \qquad y(x) = \sum_{i \in \text{top-}k(x)} w_i(x)\, f_i(x)$$
 
-(Implementation: `cosine_top1()` in `scripts/shared_data.py`; adaptive-$\tau$ variant in `boundary_solutions.py`.)
+(Implementation: `cosine_top1()` in `shared_data.py`; adaptive-$\tau$ variant in `boundary_solutions.py`.)
 
 **4.3 Gated domain addition (the §6.3 fix).** For a new domain $d_{new}$, train a one-vs-rest detector $g_{new}: X \to [0,1]$ independently of $\pi$. Calibrate threshold $\theta$ on held-out old-domain data $C$ so that the false-positive rate is bounded by target $\alpha$:
 
@@ -100,8 +100,8 @@ $$\alpha_{\text{individual}} = \alpha_{\text{total}} / M, \qquad \theta_j = \tex
 
 Replacing one expert's underlying function, at fixed profile dimensionality, does not perturb routing or prediction quality for other experts (Theorem 1, §4.5).
 
-- **The invariant property, not a fixed constant**: in every run tested, the swapped domain's own error changes substantially (magnitude varies by how different the replacement is — one canonical run showed +792%), while every untouched domain shows **exactly 0.00% change**. Reproduce: `scripts/addition_isolation_suite.py`, `section_2_swap_isolation()`.
-- Also verified inside an already-provisioned 5-dimension space (not just the original 4-dimension case): swapping one expert produced 0.00% change in the other four domains' error, and 0/4 top-1 routing decisions changed.
+- **The invariant property, not a fixed constant**: in every run tested, the swapped domain's own error changes substantially (magnitude varies by how different the replacement is — one canonical run showed +792%), while every untouched domain shows **exactly 0.00% change**. Reproduce: `addition_isolation_suite.py`, `section_2_swap_isolation()`.
+- Also verified inside an already-provisioned 5-dimension space (not just the original 4-dimension case): swapping one expert produced 0.00% change in the other four domains' error, and 0/4 top-1 routing decisions changed. (Re-verified independently during the review pass: 0/750 top-1 routing changes and 0.00% collateral MSE on all four untouched domains. The committed suite script exercises the 4-dim case only — see Appendix.)
 - **Practical implication**: if a system's dimension set is provisioned comprehensively up front, routine expert improvement/upgrade work falls entirely inside this proven-safe operation. The riskier operation (below) is only triggered by genuinely new, unanticipated domains.
 
 ---
@@ -117,19 +117,18 @@ Adding a new domain by jointly retraining the profiler across old + new domains 
 
 This is a specific instance of a well-documented phenomenon: **catastrophic forgetting in class-incremental learning** (McCloskey & Cohen, 1989 and the extensive literature since). It is not a novel discovery; the contribution here is identifying that profile-routed MoE inherits this failure mode at the *routing* level (misdirecting an entire query to the wrong specialist, not just misclassifying a label) and quantifying it for this architecture specifically.
 
-### 6.2 Measured severity (original synthetic benchmark)
+### 6.2 Measured severity
 
-Adding one new domain (law) to a 4-domain pool, then recalibrating:
+Adding one new domain (law) to a 4-domain pool, then recalibrating jointly (the broken baseline). MSE is routing-level: each domain's full test set is routed through the frozen-v1 vs jointly-retrained-v2 pools and scored by whichever expert wins. Table bundled in `performance_data.xlsx` (sheet "MSE by Domain (Addition Impact)"). The committed `addition_isolation_suite.py` `section_3_addition_and_gating()` reproduces this setup's flip/recall analysis but does not print this aggregate table; a one-line addition (verified during the review pass) makes it print exactly these digits.
 
 | domain | MSE before | MSE after | change |
 |---|---|---|---|
-| code | 0.125 | 0.215 | +71.8% |
-| creative | 0.038 | 0.190 | +404.2% |
-| math | 1.183 | 1.183 | +0.01% |
-| reasoning | 0.016 | 0.031 | +89.2% |
-| law (target) | 5.165 | 0.265 | −94.9% |
+| code | 0.770 | 0.770 | +0.00% |
+| creative | 0.038 | 0.066 | +73.5% |
+| math | 0.086 | 0.265 | +206.9% |
+| reasoning | 0.481 | 0.481 | +0.00% |
 
-Of the non-law samples that lost their correct top-1 expert to the new domain, **7 of 8 got measurably worse**, with mean error roughly tripling (0.66 → 2.10). Source: pre-existing repository artifact `versioning_demo.xlsx` / `versioning_demo.py`, not authored in this review pass.
+Two of four untouched domains show real collateral damage (creative, math); the other two happen to show none in this run — consistent with §6.5's finding that the failure concentrates on specific poorly-resolved regions rather than degrading every domain uniformly. (An earlier finding, sourced from the pre-existing repository artifact `versioning_demo.xlsx`/`versioning_demo.py` — not included in this package — showed all four domains affected, with one flip set producing 7 of 8 non-law samples measurably worse and mean error roughly tripling. Both findings support the same conclusion: real, uneven collateral damage on unrelated domains; exact magnitude and which domains are hit varies by run, consistent with §12.)
 
 ### 6.3 Bounded fix (Theorem 3, conditional)
 
@@ -137,7 +136,7 @@ Standard fix pattern from the **open-set recognition** literature (OpenMax famil
 
 **Guarantee**: for any input whose new-domain detector score falls below the calibrated threshold, the addition provably does not change its top-1 routing decision.
 
-Canonical run (reproduce: `scripts/addition_isolation_suite.py`, `section_3_addition_and_gating()`): **3 of 4** contamination-driven flips fixed; genuine new-domain recall preserved at 88.7%. The one unfixed case sits well inside the honest detector's own high-confidence range for the new domain — a well-calibrated detector genuinely cannot separate it, at any threshold, without sacrificing recall elsewhere. (An earlier development-session run found 2/3 fixed at 96.0% recall on a differently-realized dataset — see §12: the pattern, not the exact ratio, is the reproducible claim.)
+Canonical run (reproduce: `addition_isolation_suite.py`, `section_3_addition_and_gating()`): **3 of 4** contamination-driven flips fixed; genuine new-domain recall preserved at 88.7%. The one unfixed case sits well inside the honest detector's own high-confidence range for the new domain — a well-calibrated detector genuinely cannot separate it, at any threshold, without sacrificing recall elsewhere. (An earlier development-session run found 2/3 fixed at 96.0% recall on a differently-realized dataset — see §12: the pattern, not the exact ratio, is the reproducible claim.)
 
 **Corollary (provable limit, not an engineering gap)**: stated formally in §4.5.
 
@@ -145,7 +144,7 @@ Canonical run (reproduce: `scripts/addition_isolation_suite.py`, `section_3_addi
 
 Hypothesis: maybe the "irreducible" cases aren't irreducible, just under-modeled by a small gate.
 
-Tested directly: a 33-parameter gate vs. a 10,753-parameter gate (326×) on identical data. Reproduce: `scripts/capacity_ablation.py` — this one reproduces exactly, to the decimal, every run (see §12).
+Tested directly: a 33-parameter gate vs. a 10,753-parameter gate (326×) on identical data. Reproduce: `capacity_ablation.py` — this one reproduces exactly, to the decimal, every run (see §12).
 
 | | small (33 params) | large (10,753 params) |
 |---|---|---|
@@ -153,13 +152,13 @@ Tested directly: a 33-parameter gate vs. a 10,753-parameter gate (326×) on iden
 | accuracy on genuinely-ambiguous subset (2.53% of test set) | 63.6% | 62.5% |
 | overall accuracy | 97.610% | 97.570% |
 
-Cases where the large model fixed a small-model error (32) were almost exactly balanced by cases where the small model was right and the large one wasn't (36) — no systematic advantage. **Conclusion: the ambiguity is a Bayes-error property of the data (genuine overlapping support), not a capacity bottleneck.** More parameters, without co-training, do not resolve it. This independently confirms an existing finding in this project (`possibility.md`'s profiler-depth ablation found the same null result in a transformer setting).
+Cases where the large model fixed a small-model error (32) were almost exactly balanced by cases where the small model was right and the large one wasn't (36) — no systematic advantage. **Conclusion: the ambiguity is a Bayes-error property of the data (genuine overlapping support), not a capacity bottleneck.** More parameters, without co-training, do not resolve it. This conclusion stands on `capacity_ablation.py` alone; it also happens to match an earlier, independent finding in this project's original repository (`possibility.md`'s profiler-depth ablation found the same null result in a transformer setting) — mentioned as corroboration, not as something this claim depends on.
 
 *Caveat: tested only in low-dimensional synthetic space; unconfirmed whether high-dimensional semantic embeddings behave identically.*
 
 ### 6.5 Mechanism, further characterized
 
-Multi-seed test (5 independent training runs, same data distributions). Reproduce: `scripts/addition_isolation_suite.py`, `section_3_5_multi_seed_stability()`.
+Multi-seed test (5 independent training runs, same data distributions). Reproduce: `addition_isolation_suite.py`, `section_3_5_multi_seed_stability()`.
 
 - Canonical run: **5 of 9** total observed flip points recurred in **5/5 seeds** — a stable core tied to specific, consistently poorly-resolved regions. The remainder recurred in only 1–2/5 seeds — a shifting penumbra, more sensitive to individual training runs. (An earlier run found a smaller stable core, 2 of 6 points — the *existence* of a stable-core/shifting-penumbra split is the reproducible finding; its exact size is not.)
 
@@ -174,12 +173,14 @@ Margin analysis on two stable-core points from one documented run (bug caught an
 
 ### 6.6 Mitigation scope check: adaptive temperature
 
-`boundary_solutions.py`'s adaptive-$\tau$ blending (formula: §4.2, adaptive variant) reduces error ~32% on flip cases but — confirmed by direct instrumentation — **never changes which expert wins top-1**, in any tested case. It dampens the symptom, not the cause (softmax argmax is temperature-invariant by construction).
+The adaptive-$\tau$ blending in `boundary_solutions.py` (original repository, §12) reduces error ~32% on flip cases but — confirmed by direct instrumentation — **never changes which expert wins top-1**, in any tested case. It dampens the symptom, not the cause (softmax argmax is temperature-invariant by construction).
 
 Quantified how localized the cost is, across 750 test points:
 - 74.5% of requests keep $\tau$ within 2× of baseline (essentially undisturbed).
 - Only 2.7% get substantially softened ($\tau > 0.5$).
 - Correlation between $\tau$ and the top1–top2 similarity gap: **r = −1.0** (deterministic, by formula construction).
+
+(The 74.5% / 2.7% / r = −1.0 distribution statistics come from the review pass's instrumentation; the committed `boundary_solutions.py` prints the per-sample mitigation table but not this τ distribution.)
 
 So the mitigation's cost is genuinely boundary-localized, not a blanket tax on all traffic.
 
@@ -189,7 +190,7 @@ So the mitigation's cost is genuinely boundary-localized, not a blanket tax on a
 
 Adding M new domains at once, each with an independently-calibrated 1%-false-positive-rate gate, does **not** preserve a 1% aggregate rate — it compounds, a direct instance of the multiple-comparisons problem in statistics (formula: §4.4).
 
-Tested with 3 simultaneous additions (law, medicine, finance). Reproduce: `scripts/multi_dimension_compounding.py`.
+Tested with 3 simultaneous additions (law, medicine, finance). Reproduce: `multi_dimension_compounding.py`.
 
 - Each gate alone: 1.00% FPR on old-domain data (as designed).
 - **Aggregate** (≥1 gate fires spuriously): **3.00%**, matching the independence prediction (1−(1−0.01)³ ≈ 2.97%) almost exactly. This part of the result reproduces to the decimal, run after run — it follows directly from the calibration percentile, not from a longer stochastic pipeline.
@@ -202,14 +203,14 @@ Tested with 3 simultaneous additions (law, medicine, finance). Reproduce: `scrip
 
 ## 8. Validation on Real Text (Partial)
 
-No network access was available to test with a trained semantic embedding model (e.g. a sentence-transformer). Tested instead with TF-IDF + SVD (lexical/co-occurrence structure — a real step up from synthetic 2D coordinates, but not full semantic representation). Reproduce: `scripts/text_validation.py`, `part1_real_text_flip_test()`.
+No network access was available to test with a trained semantic embedding model (e.g. a sentence-transformer). Tested instead with TF-IDF + SVD (lexical/co-occurrence structure — a real step up from synthetic 2D coordinates, but not full semantic representation). Reproduce: `text_validation.py`, `part1_real_text_flip_test()`.
 
-- 131 base-domain test prompts, including 14 deliberately cross-domain "boundary" prompts (e.g. *"calculate the statute of limitations deadline..."* — genuinely math-and-law at once).
+- 131 base-domain test prompts, including 11 deliberately cross-domain "boundary" prompts (e.g. *"calculate the statute of limitations deadline..."* — genuinely math-and-law at once).
 - Canonical run: **6 flips, 100% concentrated on the boundary prompts, 0% on the ordinary prompts.** (An earlier run found 4 flips on the same design; count varies slightly per §12, concentration on boundary prompts has been 100% in every run.)
 - Important nuance: unlike the synthetic case, there is no downstream task-quality metric for text. Inspecting the flips individually, most look like defensible reclassification of genuinely dual-domain content rather than clear degradation (one flip even corrected a pre-existing profiler error). This is a real and different finding from the synthetic case, not a weaker replication of the same one.
 - The gating fix (§6.3) was **not successfully validated on this text corpus** — calibration on 300 hand-written sentences produced a degenerate threshold (0.01, fires on nearly everything) because the calibration set lacked genuine difficulty. This is a corpus-size problem, not a fix failure.
 
-**A follow-up test using systematically-generated (not hand-picked) boundary examples for calibration fixed this**: crossing domain vocabularies mechanically to produce ~600 boundary examples (vs. 14 hand-picked) raised the threshold from a degenerate 0.0031 to a meaningful 0.9943, dropped false-capture on fresh unambiguous data from 1.60% to 0.00%, at a cost of law recall dropping from 100% to 92%. This is the first working prototype of a **systematic calibration-data generation procedure** (see §9). Reproduce: `scripts/text_validation.py`, `part2_printer_prototype()` — this section's numbers reproduce exactly, to the decimal, every run.
+**A follow-up test using systematically-generated (not hand-picked) boundary examples for calibration fixed this**: crossing domain vocabularies mechanically to produce ~600 boundary examples (vs. 11 hand-picked) raised the threshold from a degenerate 0.0031 to a meaningful 0.9943, dropped false-capture on fresh unambiguous data from 1.60% to 0.00%, at a cost of law recall dropping from 100% to 92%. This is the first working prototype of a **systematic calibration-data generation procedure** (see §9). Reproduce: `text_validation.py`, `part2_printer_prototype()` — this section's numbers reproduce exactly, to the decimal, every run.
 
 ---
 
@@ -250,37 +251,38 @@ Since each new domain's gate is trained fully independently (no joint retraining
 4. Real production calibration data (for expert profiles, as opposed to gate thresholds) does not yet exist for any real domain in this project — everything validated so far uses synthetic or template-generated stand-ins.
 5. Accuracy comparison against a learned router (DeepSeek/Mixtral-style) used an undertrained baseline (~8s training); not a fair comparison yet, and no claim of superiority should rest on it until rerun at proper scale. Relatedly (§3, row 7): traditional MoE's ability to discover subtle routing signal from data at scale is a genuine, unmatched advantage that this architecture has no answer to yet.
 6. Modular composition (§9) is logically motivated and partially tested at the mechanism level, not validated at any realistic scale or domain count.
-7. `d_profile` and `k` (top-k) knob effects in `knob_boundaries.png` are not yet reliably characterized — the existing figure's own data does not clearly support its captioned conclusions for either knob; treat both as using-convention defaults, not verified findings, until re-tested.
-8. Exact reproducibility is run-dependent for multi-stage experiments (§12) — treat percentages and sample-level detail as illustrative of a real, repeatedly-observed pattern, not as fixed constants. The two-decimal-place-stable results (§6.4, the multi-dimension percentages in §7, the printer-prototype numbers in §8) are the ones safe to cite as fixed.
-9. Margin/confidence analysis (§6.5) has been run and verified on one documented dataset realization, not yet re-verified against the canonical script's own specific stable-core points — a known, stated gap rather than a silently-dropped one.
-10. The two-tier deployment story and multi-adapter batched serving (§2.2) are design intent, not tested engineering, in this document — they rest on citing prior art (Punica, S-LoRA), not original validation here.
+7. Exact reproducibility is run-dependent for multi-stage experiments (§12) — treat percentages and sample-level detail as illustrative of a real, repeatedly-observed pattern, not as fixed constants. The two-decimal-place-stable results (§6.4, the multi-dimension percentages in §7, the printer-prototype numbers in §8) are the ones safe to cite as fixed.
+8. Margin/confidence analysis (§6.5) has been run and verified on one documented dataset realization, not yet re-verified against the canonical script's own specific stable-core points — a known, stated gap rather than a silently-dropped one.
+9. The two-tier deployment story and multi-adapter batched serving (§2.2) are design intent, not tested engineering, in this document — they rest on citing prior art (Punica, S-LoRA), not original validation here.
+
+(A prior version of this list included a critique of `knob_boundaries.png`'s captioned conclusions. Removed here — that figure isn't part of this package, and a limitation about a separate, non-included artifact doesn't belong in a standalone document. The critique itself is still accurate and stands wherever that figure lives.)
 
 ---
 
 ## 12. Reproducibility
 
-Every numbered finding above has a corresponding runnable script in `scripts/` (`shared_data.py` + four standalone scripts). Run any of them directly; no external data or network access required.
+Every numbered finding above has a corresponding runnable script at this repository's root (`shared_data.py` + four standalone scripts). Run any of them directly; no external data or network access required.
 
 **Checked directly rather than assumed**: re-running these experiments in clean, standalone scripts (as opposed to the original incremental development session) produces the same *qualitative* findings every time, but not bit-identical numbers. Same nominal random seeds do not guarantee identical output once code structure changes how the random-number stream gets consumed — a common and under-discussed reproducibility gap in ML experimentation generally, not specific to this project.
 
 - **Short, self-contained experiments reproduce exactly.** `capacity_ablation.py` and the calibration half of `text_validation.py` reproduce their numbers to the last decimal, run after run.
 - **Longer multi-stage pipelines (several sequential model fits) reproduce the *pattern*, not the exact figures.** The addition-isolation and multi-seed-stability scripts consistently show: real flips occur, concentrated in the same qualitative way, gating fixes most but not all of them, and a stable-core-plus-shifting-penumbra split always appears in multi-seed testing — but the specific sample indices, exact percentages, and swap-isolation magnitude vary run to run.
 
-The numbers in this document are this repository's canonical run (the actual output of the scripts in `scripts/`, verified immediately before writing this document). Anyone re-running the scripts should expect the same *conclusions*, not necessarily the same *digits* — treat the scripts, not the frozen numbers in this file, as the actual source of truth.
+The numbers in this document are this repository's canonical run (the actual output of the scripts at this repository's root plus the bundled `performance_data.xlsx`, verified immediately before writing this document). Anyone re-running the scripts should expect the same *conclusions*, not necessarily the same *digits* — treat the scripts, not the frozen numbers in this file, as the actual source of truth.
 
 ### Appendix: Companion Scripts
 
-All in `scripts/`, each independently runnable (`python3 <script>.py`), CPU-only, no network access required:
+All at this repository's root, each independently runnable (`python3 <script>.py`), CPU-only, no network access required:
 
 | script | reproduces |
 |---|---|
 | `shared_data.py` | canonical data generator + Expert/profiler/routing infrastructure (implements the formulas in §4) used by all other scripts |
-| `addition_isolation_suite.py` | §5 (swap isolation, both dimension counts), §6.2–6.3 (addition flips + gated fix), §6.5 (multi-seed stability) |
+| `addition_isolation_suite.py` | §5 (swap isolation, 4-dim pool), §6.2–6.3 (addition flips + gated fix), §6.5 (multi-seed stability) |
 | `capacity_ablation.py` | §6.4 (parameter-scaling test) |
 | `multi_dimension_compounding.py` | §7 (Bonferroni compounding across simultaneous additions) |
 | `text_validation.py` | §8 (real-text flip replication + systematic calibration-generation prototype) |
 
-The pre-existing repository files `boundary_solutions.py` and `versioning_demo.py`/`versioning_demo.xlsx` (§6.2, §6.6) were not authored in this review pass and are referenced, not reproduced, here.
+This package's five scripts (including `shared_data.py`) plus this document reproduce every load-bearing claim above, with three stated exceptions: the §6.2 aggregate MSE table and the §6.6 mitigation-comparison table are bundled in `performance_data.xlsx` (the committed scripts print the underlying flip/recall and per-sample analyses but not those two tables), and the §5 5-dimension swap verification was re-verified independently during the review pass rather than printed by a committed script. The original repository's `boundary_solutions.py` (§6.6), `versioning_demo.py`/`versioning_demo.xlsx` (§6.2), and `possibility.md` (§6.4) are pre-existing files cited as historical corroboration or as the adaptive-τ implementation's home — no load-bearing claim in this document depends on them.
 
 ---
 
