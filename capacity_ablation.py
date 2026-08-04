@@ -1,7 +1,7 @@
 """
 capacity_ablation.py
 
-Reproduces TECHNICAL.md section 3.4: does giving the gate detector far more
+Reproduces TECHNICAL.md section 6.4: does giving the gate detector far more
 parameters (without co-training) resolve the genuinely-ambiguous boundary
 cases, or is that ambiguity a property of the data (Bayes error)?
 

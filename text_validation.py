@@ -1,14 +1,14 @@
 """
 text_validation.py
 
-Reproduces TECHNICAL.md section 5: does the addition-flip mechanism replicate
+Reproduces TECHNICAL.md section 8: does the addition-flip mechanism replicate
 on real text vocabulary (not just synthetic 2D coordinates), and does
 systematically-generated (vs. hand-picked) boundary calibration data fix the
 degenerate-threshold problem found with a small hand-written corpus?
 
 Uses TF-IDF + SVD (lexical/co-occurrence structure) -- NOT a trained semantic
 embedding model, since no network access was available to fetch one. This is
-a real limitation, stated explicitly in TECHNICAL.md section 7.
+a real limitation, stated explicitly in TECHNICAL.md section 11.
 
 Run: python3 text_validation.py
 Expected runtime: ~10-20s on CPU.

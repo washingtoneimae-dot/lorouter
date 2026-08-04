@@ -119,7 +119,7 @@ This is a specific instance of a well-documented phenomenon: **catastrophic forg
 
 ### 6.2 Measured severity
 
-Adding one new domain (law) to a 4-domain pool, then recalibrating jointly (the broken baseline). MSE is routing-level: each domain's full test set is routed through the frozen-v1 vs jointly-retrained-v2 pools and scored by whichever expert wins. Table bundled in `performance_data.xlsx` (sheet "MSE by Domain (Addition Impact)"). The committed `addition_isolation_suite.py` `section_3_addition_and_gating()` reproduces this setup's flip/recall analysis but does not print this aggregate table; a one-line addition (verified during the review pass) makes it print exactly these digits.
+Adding one new domain (law) to a 4-domain pool, then recalibrating jointly (the broken baseline). MSE is routing-level: each domain's full test set is routed through the frozen-v1 vs jointly-retrained-v2 pools and scored by whichever expert wins. Generated fresh by this package's own code — reproduce: `addition_isolation_suite.py`, `section_3_addition_and_gating()` (the table is printed at the end of the function; the same digits are bundled in `performance_data.xlsx`, sheet "MSE by Domain (Addition Impact)").
 
 | domain | MSE before | MSE after | change |
 |---|---|---|---|
@@ -282,7 +282,7 @@ All at this repository's root, each independently runnable (`python3 <script>.py
 | `multi_dimension_compounding.py` | §7 (Bonferroni compounding across simultaneous additions) |
 | `text_validation.py` | §8 (real-text flip replication + systematic calibration-generation prototype) |
 
-This package's five scripts (including `shared_data.py`) plus this document reproduce every load-bearing claim above, with three stated exceptions: the §6.2 aggregate MSE table and the §6.6 mitigation-comparison table are bundled in `performance_data.xlsx` (the committed scripts print the underlying flip/recall and per-sample analyses but not those two tables), and the §5 5-dimension swap verification was re-verified independently during the review pass rather than printed by a committed script. The original repository's `boundary_solutions.py` (§6.6), `versioning_demo.py`/`versioning_demo.xlsx` (§6.2), and `possibility.md` (§6.4) are pre-existing files cited as historical corroboration or as the adaptive-τ implementation's home — no load-bearing claim in this document depends on them.
+This package's five scripts (including `shared_data.py`) plus this document reproduce every load-bearing claim above, with two stated exceptions: the §6.6 mitigation-comparison table is bundled in `performance_data.xlsx` (the underlying per-sample analysis is printed by `boundary_solutions.py`, which lives in the original repository), and the §5 5-dimension swap verification was re-verified independently during the review pass rather than printed by a committed script. The original repository's `boundary_solutions.py` (§6.6), `versioning_demo.py`/`versioning_demo.xlsx` (§6.2), and `possibility.md` (§6.4) are pre-existing files cited as historical corroboration or as the adaptive-τ implementation's home — no load-bearing claim in this document depends on them.
 
 ---
 

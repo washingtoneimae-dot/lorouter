@@ -1,12 +1,12 @@
 """
 addition_isolation_suite.py
 
-Reproduces TECHNICAL.md sections 2, 3.1-3.3, 3.5:
-  - Swap isolation (both in the original 4-dim pool and inside an
-    already-provisioned 5-dim pool)
+Reproduces TECHNICAL.md sections 5, 6.2-6.3, 6.5:
+  - Swap isolation in the original 4-dim pool (the 5-dim verification is
+    documented in section 5 but not exercised by this script)
   - The addition flip test (jointly-retrained profiler vs frozen base)
   - The gated one-vs-rest fix, with properly-calibrated threshold
-  - Multi-seed flip stability + confidence/margin analysis
+  - Multi-seed flip stability
 
 Run: python3 addition_isolation_suite.py
 Expected runtime: ~15-30s on CPU.
@@ -26,7 +26,7 @@ ALL_NAMES_WITH_LAW = sorted(BASE_NAMES + ['law'])
 
 def section_2_swap_isolation():
     print("="*70)
-    print("SECTION 2: Swap Isolation")
+    print("SECTION 5: Swap Isolation")
     print("="*70)
     train, test = generate_dataset(BASE_CLUSTERS)
     experts_before = [build_expert(n, train, test, BASE_NAMES, seed=42) for n in BASE_NAMES]
@@ -77,7 +77,7 @@ def section_2_swap_isolation():
 
 def section_3_addition_and_gating():
     print("="*70)
-    print("SECTION 3.1-3.3: Addition flips + gated fix")
+    print("SECTION 6.2-6.3: Addition flips + gated fix")
     print("="*70)
     domains = {**BASE_CLUSTERS, 'law': NEW_CLUSTERS['law']}
     train, test = generate_dataset(domains)
@@ -150,10 +150,31 @@ def section_3_addition_and_gating():
     law_recall = (gate_clf.predict_proba(full_scaler.transform(test['law']['X']))[:, 1] >= threshold).mean()
     print(f"Genuine law recall at this threshold: {law_recall*100:.1f}%\n")
 
+    # Aggregate routing-level MSE by domain (TECHNICAL.md section 6.2 table):
+    # each domain's full test set is routed through the frozen-v1 vs
+    # jointly-retrained-v2 pools and scored by whichever expert wins.
+    ep1 = np.array([e.profile for e in experts_v1])
+    ep2 = np.array([e.profile for e in experts_v2])
+    print(f"\n{'domain':12s} {'MSE v1':>10s} {'MSE v2':>10s} {'change':>9s}")
+    for cn in BASE_NAMES:
+        errs1, errs2 = [], []
+        for i in range(len(test[cn]['X'])):
+            x = test[cn]['X'][i]
+            p1 = base_clf.predict_proba(base_scaler.transform(x.reshape(1, -1)))[0]
+            o1 = [list(base_clf.classes_).index(n) for n in BASE_NAMES]
+            w1, _ = cosine_top1(p1[o1], ep1)
+            errs1.append((test[cn]['y'][i] - experts_v1[w1].predict(x.reshape(1, -1))[0])**2)
+            p2 = joint_clf.predict_proba(full_scaler.transform(x.reshape(1, -1)))[0]
+            o2 = [joint_classes.index(n) for n in ALL_NAMES_WITH_LAW]
+            w2, _ = cosine_top1(p2[o2], ep2)
+            errs2.append((test[cn]['y'][i] - experts_v2[w2].predict(x.reshape(1, -1))[0])**2)
+        b, a = float(np.mean(errs1)), float(np.mean(errs2))
+        print(f"{cn:12s} {b:10.5f} {a:10.5f} {100*(a-b)/b:+8.2f}%")
+
 
 def section_3_5_multi_seed_stability():
     print("="*70)
-    print("SECTION 3.5: Multi-seed flip stability")
+    print("SECTION 6.5: Multi-seed flip stability")
     print("="*70)
     domains = {**BASE_CLUSTERS, 'law': NEW_CLUSTERS['law']}
     train, test = generate_dataset(domains, train_seed=42, test_seed=142)
