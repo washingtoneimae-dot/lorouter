@@ -1,0 +1,187 @@
+# LOROUTER — Profile Routing as an Adapter-Selection Capability
+
+Status: research document for the `lorouter` branch. Evidence tiers follow
+the parent suite's convention: **proven** (verified by runnable script,
+reproducible), **bounded/conditional** (proven under stated conditions with
+known limits), **designed** (specified, not yet tested), **open**
+(hypothesis, not yet validated). Every number below is produced by a script
+in this repository; the scripts are the source of truth.
+
+---
+
+## 1. What this angle is
+
+The parent suite (`TECHNICAL.md`, v2 branch) established that a
+profile-routed MoE — experts carrying calibrated competence vectors,
+inputs profiled into the same space, cosine top-k selection — swaps experts
+with zero collateral (0.00%, structural), adds moat-covered domains as
+swaps, and keeps every decision traceable.
+
+The lorouter angle is the observation that **this mechanism is not limited
+to MoE experts. It is an adapter-selection capability.** The serving
+ecosystem for fine-tuned models (Punica, S-LoRA, dLoRA, LoRAX, vLLM)
+solved *how to batch and load* many LoRA adapters on one base model — but
+every one of them requires the request to name its adapter. No serving
+system decides which adapter a query needs. Lorouter is that decision
+layer: it selects adapters from query content, with the same zero-learned-
+parameter, fully-traceable mechanism the suite proved for experts.
+
+**The new capability surface:** the profile vector stops being only an
+internal routing artifact and becomes *adapter metadata* — a calibrated,
+versionable, auditable description of what an adapter is good at, minted
+from a calibration foundation (the moat). Adapter selection becomes a
+data operation, not a training operation.
+
+---
+
+## 2. Mechanism (unchanged from the parent suite, applied to adapters)
+
+1. **Adapter profile**: for each adapter, a competence vector over the
+   known domains. In the stand-in setting: mean claim-strength of the
+   adapter's specialist classifier per domain. In the real-LoRA setting:
+   inverse calibration loss per domain, measured on (question + that
+   domain's answer behavior) pairs — the LM-text analog of the suite's
+   inverse-MSE formula. Calibration is *measurement*, not training.
+2. **Query profile**: a shared profiler (TF-IDF + SVD features, §8 stack)
+   maps the query into the same domain space.
+3. **Selection**: cosine top-k between query profile and adapter profiles.
+   Zero learned router parameters. Every decision reduces to a score.
+
+The router's guarantees are inherited from the parent suite: swap
+isolation is structural (a profile insertion cannot change other adapters'
+scores), additions are swaps when the moat covers the domain (§3.2 of
+possibility.md), and calibration discipline is the binding constraint (§8).
+
+---
+
+## 3. Evidence
+
+### 3.1 Stand-in benchmark (proven, brick 2)
+
+`experiments/benchmark.py`, 5 seeds, 56 test inputs/seed, random floor
+19.3%:
+
+| strategy | acc | note |
+|---|---|---|
+| centroid (task-embedding routing) | 97.9% | ahead by ~1 example/seed, small-n |
+| **profile (lorouter)** | **96.4%** | zero learned params; stable across seeds |
+| learned router (query→adapter map) | 96.4% | the MoE-LoRA line, simplified |
+| random | 19.3% | floor |
+
+- Profile routing ties a learned router at 96.4% with zero learned router
+  parameters.
+- **Swap isolation verified in the text setting**: replacing the code
+  adapter with a deliberately weak specialist changed routing on 0
+  other-domain inputs.
+
+### 3.2 Real-LoRA integration (proven as mechanism, bounded as quality)
+
+`experiments/real_lora_integration.py` — SmolLM2-135M-Instruct, rank-8
+LoRA adapters, 10 epochs on QA pairs built from brick 3, profiled by
+answer-conditional calibration loss:
+
+- **Routing accuracy: 96.4% (54/56)** — identical to the stand-in
+  benchmark, and robust across two profile metrics (question-only loss and
+  answer-conditional loss both route at 96.4%).
+- **Adapter differentiation: partial (2/4 diagonal)**. The code adapter
+  and the education adapter are lowest on their own domains; the finance
+  and law adapters are both lowest on code — the base model's strong code
+  priors make code the easiest domain for every adapter. This is a
+  base-model property, not a router failure; it is stated because it
+  bounds what routing can do: profiles are only as separable as the
+  adapters beneath them.
+- Mechanism verdict: the full chain (real LoRA → real losses → profiles →
+  cosine selection) works end-to-end.
+
+### 3.3 Unseen-task generalization (proven stable, quality OPEN)
+
+`experiments/unseen_task_generalization.py` — education fully held out
+(no education adapter, profiler never saw education):
+
+- **Routing decisions are stable and interpretable**: education queries
+  route to finance 10/14, code 2, law 2 — identical in the real-LoRA and
+  the stand-in arms (two independent implementations agreeing). HELB/
+  bursary/fee queries are lexically finance-adjacent; the router's choice
+  is defensible.
+- **Quality is NOT verified**: oracle agreement 42.9% (random would be
+  ~33%); the router's loss gap equals random expectation. At this scale,
+  with no aligned adapter for the unseen domain, routing picks sensibly
+  but does not beat chance on actual adapter competence.
+- Interpretation: the failure is *no aligned adapter exists*, not *routing
+  is broken*. This is exactly the case the moat strategy pre-empts
+  (possibility.md §3): a moat-covered domain always has an aligned
+  adapter, so unseen-task routing becomes seen-task routing. The control
+  experiment for this claim is in §3.4.
+
+### 3.4 Adapter-space scaling and the aligned-adapter control (bounded)
+
+The two follow-up experiments this document was written to contain:
+
+- **Richer space (8 adapters)**: two adapters per domain, trained on
+  disjoint data with different answer variants. Tests whether profiles
+  stay separable and routing accuracy holds as the adapter pool grows.
+- **LORAUTER-style exemplar signal**: task embeddings derived from a
+  small validation set of the unseen task, per LORAUTER (arXiv:2601.21795),
+  plus the aligned-adapter control: the same unseen queries routed with an
+  education adapter present — which should restore oracle-level agreement
+  and confirm the mechanism's ceiling.
+
+Results of both: see `experiments/lora_exemplar_routing.py` and
+`experiments/eight_adapter_space.py`; summary tables in
+`experiments/lorouter_results.xlsx` (built by
+`experiments/build_lora_workbook.py`).
+
+---
+
+## 4. The moat as the adapter-profile factory (the strategic claim)
+
+Possibility.md §3 proved (synthetic) that a broad calibration foundation
+converts additions into swaps. Lorouter makes that operational for
+adapter pools: **a new adapter enters the router by calibration, not by
+training the router.** The moat corpus (bricks 1–3, 664 examples,
+boundary-dense) is the calibration foundation; adapter profiles are minted
+from it. The corpus growth experiment (brick 3, 25% calibration split)
+resolved the p99 threshold degeneracy documented in the parent suite's
+calibration trial — the calibration foundation is now large enough for
+stable threshold behavior at the 99th percentile.
+
+This is the defensibility argument stated as engineering: anyone can copy
+the router (it is simple, MIT); nobody can copy a boundary-dense,
+domain-labelled calibration foundation — and that foundation is what makes
+adapter selection cheap, auditable, and swap-safe.
+
+---
+
+## 5. Honest limits (consolidated)
+
+- Real-LoRA experiments use a 135M model, synthetic QA pairs, 10 epochs,
+  rank 8 — a mechanism test, not an adapter-quality claim. No generation
+  quality evaluation, no latency/memory measurement, no vLLM/LoRAX
+  integration.
+- Features are lexical (TF-IDF + SVD); no semantic embeddings in the text
+  arm.
+- Unseen-task quality is open at this scale (loss gap == random); only
+  routing stability is verified.
+- Adapter differentiation is bounded by base-model priors (§3.2).
+- The corpus is synthetic-template English; no human review pass, no
+  Swahili/sheng coverage.
+
+---
+
+## 6. Related work (verified sources)
+
+- Punica (arXiv:2310.18547), S-LoRA (arXiv:2311.03285), dLoRA (OSDI
+  2024), LoRAX (Predibase): the serving layer — solved, out of scope.
+- LORAUTER (arXiv:2601.21795): task-representation adapter routing; the
+  closest published approach. Its settings (task-level embeddings from
+  validation sets, 1500+ adapters, unseen tasks with aligned adapters)
+  are the benchmark this branch is building toward.
+- MoLE line (Muqeeth et al. 2024; ICML 2025; HotMoE, AAAI 2026): learned
+  routers over LoRA experts — the coupling profile routing removes.
+
+---
+
+*Evidence tiers are load-bearing: §3.1–3.2 are proven as stated, §3.3 is
+stable-but-open, §3.4 is bounded by the experiments it references. The
+scripts are the source of truth; rerun them before quoting these numbers
+elsewhere.*

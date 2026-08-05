@@ -36,10 +36,20 @@ Research prototype. Two layers of verification, both honest about scope:
    finance/law adapters both favor code — the base model's code priors).
 3. Unseen-task test (education held out): routing decisions are stable and
    interpretable (education → finance, 10/14, identical in the real-LoRA
-   and stand-in arms — HELB/bursary/fee queries are lexically finance-
-   adjacent), but oracle agreement is 42.9% and the loss gap equals random
-   expectation: at this scale the router does NOT yet beat chance on
-   unseen-domain adapter competence. Quality unverified; mechanism stable.
+   and stand-in arms), but oracle agreement is 42.9% and the loss gap
+   equals random expectation — quality unverified at this scale. The
+   aligned-adapter control (lora_exemplar_routing.py V3) confirms the
+   mechanism's ceiling is adapter COVERAGE, not routing quality: with the
+   domain's adapter present, routing is 14/14. LORAUTER-style exemplar
+   task embeddings actively mislead (all → code, lexical artifact).
+4. Eight-adapter pool: domain-level accuracy holds at 96.4% with 2
+   adapters/domain; profile separation is bounded by adapter diversity
+   (near-duplicate adapters → cosine 0.996) but routing still works; swap
+   isolation scales (0/56 flips).
+
+Full record: FINDINGS.md (25 numbered findings) and
+experiments/lorouter_results.xlsx (6 sheets, charts, built by
+experiments/build_lora_workbook.py).
 
 ## Verified benchmark (experiments/benchmark.py, 5 seeds)
 
