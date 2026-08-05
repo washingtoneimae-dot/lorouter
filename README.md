@@ -84,6 +84,17 @@ Run it: `python3 experiments/benchmark.py` (scikit-learn + numpy, CPU-only,
     experiments/
       benchmark.py       profile vs centroid vs learned vs random,
                          5 seeds, per-domain breakdown, swap-isolation test
+      real_lora_integration.py      SmolLM2-135M LoRA adapters, profiles,
+                                    routing (96.4%)
+      unseen_task_generalization.py education held out; stability + limits
+      lora_exemplar_routing.py      LORAUTER-style exemplars + aligned
+                                    adapter control
+      eight_adapter_space.py        8-adapter pool: scaling, separation,
+                                    isolation
+      build_lora_workbook.py        regenerates lorouter_results.xlsx
+    LOROUTER.md          the capability's technical documentation
+    FINDINGS.md          all 25 numbered findings
+    possibility.md       use cases, products, engineering practice
     corpus/              moat corpus bricks (shared with v2 branch)
 
 ## Honest limits
