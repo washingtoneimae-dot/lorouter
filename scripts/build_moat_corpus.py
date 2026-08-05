@@ -27,10 +27,10 @@ from pathlib import Path
 
 import numpy as np
 
-rng = np.random.RandomState(20260806)   # fixed seed: reproducible corpus
+rng = np.random.RandomState(20260807)   # fixed seed: reproducible corpus
 
 OUT_DIR = Path(__file__).resolve().parent.parent / "corpus"
-VERSION = "v2-moat-brick-2"
+VERSION = "v2-moat-brick-3"
 CONTRIBUTOR = "washington"
 
 # ----------------------------------------------------------------------
@@ -120,19 +120,22 @@ FIN_TEMPLATES = [
     "Is it possible to {fin_action2} {fin_thing3} without a bank account?",
     "How long does {fin_process} take to reflect in my {fin_account}?",
     "Explain the charges for {fin_service} on {fin_platform}.",
+    "What documents do I need to {fin_action3} {fin_thing4}?",
 ]
 FIN_VOCAB = {
-    "act": ["send money to", "withdraw cash from", "pay for goods with", "save towards"],
-    "fin_thing": ["a mobile wallet", "a SACCO account", "a bank card", "an escrow account"],
-    "fin_channel": ["M-Pesa", "Airtel Money", "a bank app", "an agent till"],
-    "fin_action": ["transferring", "depositing", "withdrawing", "overdrawing"],
-    "fin_thing2": ["KES 5,000", "a dollar amount", "loan repayments", "insurance premiums"],
-    "fin_action2": ["open an account", "get a loan", "buy treasury bills", "pay a utility bill"],
-    "fin_thing3": ["from abroad", "as a minor", "as a foreigner", "with a passport"],
-    "fin_process": ["a PesaLink transfer", "a bank-to-wallet payment", "a cheque clearance", "a dividend payout"],
-    "fin_account": ["savings account", "current account", "M-Pesa wallet", "cooperative account"],
-    "fin_service": ["standing orders", "mobile banking", "merchant payments", "international transfers"],
-    "fin_platform": ["M-Pesa", "a fintech app", "an agency bank", "the stock exchange"],
+    "act": ["send money to", "withdraw cash from", "pay for goods with", "save towards", "invest in", "borrow against"],
+    "fin_thing": ["a mobile wallet", "a SACCO account", "a bank card", "an escrow account", "a treasury bond", "an insurance policy"],
+    "fin_channel": ["M-Pesa", "Airtel Money", "a bank app", "an agent till", "a forex bureau", "the NSE app"],
+    "fin_action": ["transferring", "depositing", "withdrawing", "overdrawing", "reversing", "splitting"],
+    "fin_thing2": ["KES 5,000", "a dollar amount", "loan repayments", "insurance premiums", "a dividend", "a salary payment"],
+    "fin_action2": ["open an account", "get a loan", "buy treasury bills", "pay a utility bill", "start a chama", "register for eCitizen payments"],
+    "fin_thing3": ["from abroad", "as a minor", "as a foreigner", "with a passport", "without collateral", "with a guarantor"],
+    "fin_process": ["a PesaLink transfer", "a bank-to-wallet payment", "a cheque clearance", "a dividend payout", "an RTGS transfer", "a standing order"],
+    "fin_account": ["savings account", "current account", "M-Pesa wallet", "cooperative account", "dollar account", "fixed deposit"],
+    "fin_service": ["standing orders", "mobile banking", "merchant payments", "international transfers", "overdraft facilities", "salary advances"],
+    "fin_platform": ["M-Pesa", "a fintech app", "an agency bank", "the stock exchange", "a Sacco portal", "an insurance app"],
+    "fin_action3": ["open", "close", "consolidate", "register", "link", "verify"],
+    "fin_thing4": ["a bank account", "a mobile money line", "a SACCO membership", "an NSSF account", "a HELB account", "an escrow account"],
 }
 
 LAW_TEMPLATES = [
@@ -142,6 +145,8 @@ LAW_TEMPLATES = [
     "Who is liable when {law_scenario}?",
     "What is the penalty for {law_offense} under Kenyan law?",
     "Does {law_doc} apply to {law_entity}?",
+    "Can {law_entity} be sued for {law_offense}?",
+    "What does {law_statute} say about {law_topic}?",
 ]
 LAW_VOCAB = {
     "law_doc": ["the Data Protection Act 2019", "the Employment Act", "the Companies Act", "the Consumer Protection Act", "the Labour Relations Act", "the Access to Information Act"],
@@ -160,18 +165,21 @@ CODE_TEMPLATES = [
     "Why does my code {code_fail} when I {code_act2}?",
     "How do I {code_act3} without {code_avoid}?",
     "Explain how to {code_action2} using {code_tool}.",
+    "How do I {code_act4} when {code_cond}?",
 ]
 CODE_VOCAB = {
-    "code_act": ["parse JSON", "retry failed requests", "hash a password", "cache database queries"],
-    "code_lang": ["Python", "JavaScript", "Go", "Dart"],
-    "code_action": ["handle pagination", "manage connection pools", "validate user input", "implement authentication"],
-    "code_target": ["a large dataset", "a mobile app", "an internal API", "a payment gateway"],
-    "code_fail": ["throw a null pointer", "return stale data", "time out", "corrupt the database"],
-    "code_act2": ["call an external service", "run a migration", "deploy to production", "shard the table"],
-    "code_act3": ["stream large files", "run background jobs", "share state across threads", "roll back a transaction"],
-    "code_avoid": ["blocking the event loop", "memory leaks", "race conditions", "buffering the whole file"],
-    "code_action2": ["implement retry logic", "build a rate limiter", "write an idempotent endpoint", "set up structured logging"],
-    "code_tool": ["Redis", "PostgreSQL", "Kafka", "Docker"],
+    "code_act": ["parse JSON", "retry failed requests", "hash a password", "cache database queries", "serialize objects", "validate webhooks"],
+    "code_lang": ["Python", "JavaScript", "Go", "Dart", "Rust", "TypeScript"],
+    "code_action": ["handle pagination", "manage connection pools", "validate user input", "implement authentication", "schedule background jobs", "build a REST client"],
+    "code_target": ["a large dataset", "a mobile app", "an internal API", "a payment gateway", "a message queue", "a data warehouse"],
+    "code_fail": ["throw a null pointer", "return stale data", "time out", "corrupt the database", "deadlock", "exhaust memory"],
+    "code_act2": ["call an external service", "run a migration", "deploy to production", "shard the table", "reload config", "spawn workers"],
+    "code_act3": ["stream large files", "run background jobs", "share state across threads", "roll back a transaction", "batch inserts", "tune garbage collection"],
+    "code_avoid": ["blocking the event loop", "memory leaks", "race conditions", "buffering the whole file", "N+1 queries", "hardcoded secrets"],
+    "code_action2": ["implement retry logic", "build a rate limiter", "write an idempotent endpoint", "set up structured logging", "add circuit breakers", "write migration tests"],
+    "code_tool": ["Redis", "PostgreSQL", "Kafka", "Docker", "S3", "Celery"],
+    "code_act4": ["handle offline sync", "split a monolith", "secure an API", "debug a memory leak", "run A/B tests", "observe latency"],
+    "code_cond": ["the network drops", "the queue backs up", "the replica lags", "a deploy is in progress", "the cache misses", "the database is locked"],
 }
 
 EDUCATION_TEMPLATES = [
@@ -257,6 +265,23 @@ BOUNDARY_TEMPLATES = [
     ("finance+law+education", "How do I build a {edu_app2} that issues {fin_rec} and stores {law_rec} for HELB audits?"),
     ("finance+law+education", "What does a {fintech_edu} need to log to satisfy {law_audit2} and {edu_reg}?"),
     ("finance+code+education", "How do I handle {fin_chan3} callbacks in a school {code_fee} without double-debiting parents?"),
+    # brick 3 additions -- education-heavy pairs + more coverage
+    ("finance+education", "How does the new university funding model calculate my loan eligibility?"),
+    ("finance+education", "Are HELB loan defaults reported to credit reference bureaus?"),
+    ("finance+education", "What happens to my bursary if I transfer to a private university?"),
+    ("finance+education", "Can a university withhold my certificate for unpaid fees?"),
+    ("finance+education", "How do I pay back my HELB loan if I drop out of university?"),
+    ("law+education", "Can a school expel a student for unpaid fees under Kenyan law?"),
+    ("law+education", "What does the Basic Education Act say about student discipline?"),
+    ("law+education", "Is it legal for a private college to keep my transcripts for an unpaid balance?"),
+    ("law+education", "Can the government regulate fees charged by private universities?"),
+    ("code+education", "How do I build a KCSE results checker against a public API?"),
+    ("code+education", "How do I design an LMS that handles 10,000 concurrent students?"),
+    ("code+education", "How do I implement a secure student-record system with role-based access?"),
+    ("finance+law", "Is it legal for a digital lender to deduct directly from a borrower's salary?"),
+    ("finance+law", "What happens to an M-Pesa account when the owner dies intestate?"),
+    ("law+code", "What data can a Kenyan fintech legally store about its users?"),
+    ("law+code", "How do I make an AI moderation system comply with the Data Protection Act?"),
 ]
 BOUNDARY_VOCAB = {
     "fin_act": ["transfer", "remit", "lend", "invest"],
@@ -359,22 +384,24 @@ def main():
 
     # ---- clean examples: hand-written seeds + systematic fills
     clean_spec = {
-        "finance": (FINANCE_SEEDS, FIN_TEMPLATES, FIN_VOCAB, 90),
-        "law": (LAW_SEEDS, LAW_TEMPLATES, LAW_VOCAB, 90),
-        "code": (CODE_SEEDS, CODE_TEMPLATES, CODE_VOCAB, 90),
-        "education": (EDUCATION_SEEDS, EDUCATION_TEMPLATES, EDUCATION_VOCAB, 90),
+        "finance": (FINANCE_SEEDS, FIN_TEMPLATES, FIN_VOCAB, 150),
+        "law": (LAW_SEEDS, LAW_TEMPLATES, LAW_VOCAB, 150),
+        "code": (CODE_SEEDS, CODE_TEMPLATES, CODE_VOCAB, 150),
+        "education": (EDUCATION_SEEDS, EDUCATION_TEMPLATES, EDUCATION_VOCAB, 150),
     }
     for domain, (seeds, templates, vocab, n_target) in clean_spec.items():
         texts = list(seeds)
         attempts = 0
-        while len(texts) < n_target and attempts < 2500:
+        while len(texts) < n_target and attempts < 3000:
             attempts += 1
             t = fill(templates[rng.randint(len(templates))], vocab, rng)
             if t not in texts:
                 texts.append(t)
-        # stratified split: 70 train / 15 calibration / 15 test
+        # stratified split: 60 train / 25 calibration / 15 test
+        # (calibration share raised vs brick 2 to stabilize the s8 p99
+        # threshold, per the calibration trial's small-n finding)
         perm = rng.permutation(len(texts))
-        n_train = int(len(texts) * 0.7)
+        n_train = int(len(texts) * 0.6)
         n_cal = int(len(texts) * 0.85) - n_train
         for i, idx in enumerate(perm):
             split = "train" if i < n_train else ("calibration" if i < n_train + n_cal else "test")
@@ -400,7 +427,7 @@ def main():
 
     # ---- write outputs
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    stem = "moat_brick2"
+    stem = "moat_brick3"
     with open(OUT_DIR / f"{stem}.jsonl", "w") as f:
         for ex in examples:
             f.write(json.dumps(ex) + "\n")
