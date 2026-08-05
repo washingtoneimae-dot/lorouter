@@ -1,98 +1,87 @@
-# fuzzy-octo-couscous
+# lorouter
 
-Profile-Routed Modular MoE, reproduction suite. Six CPU-only scripts, one
-shared data module, and one document that together pin down what this
-architecture can and cannot guarantee. No GPU, no network, no downloads.
+Profile-based LoRA adapter selection for multi-adapter LLM serving.
 
-## What this is
+Serving systems (Punica, S-LoRA, dLoRA, LoRAX, vLLM) batch and load LoRA
+adapters efficiently — but every one of them requires the request to name
+its adapter. **lorouter is the selection layer they don't provide**: it
+decides which adapter a query needs, from the query itself, with zero
+learned router parameters.
 
-Standard MoE routes inputs through a learned gate trained jointly with the
-experts. This project replaces the gate with cosine similarity between
-calibrated profiles: each expert gets a measured competence vector, the
-profiler maps an input into the same space, and the router picks the closest
-experts. The question this repo answers: what do you gain, what do you lose,
-and exactly where does it break?
+- Each adapter carries a **calibrated profile vector**: its measured
+  competence per domain (how strongly it claims inputs from each domain).
+- A shared **profiler** maps a query into the same domain space.
+- The router picks the top-k adapters by **cosine similarity**.
+- Every decision reduces to a score: "adapter X won because it scored Y on
+  domain Z" — traceable by construction, no black box.
 
-The short version, with the evidence in TECHNICAL.md:
+This branch is the build-out of the multi-LoRA use case researched and
+positioned in `possibility.md` (parent suite, v2 branch). The parent suite
+(`TECHNICAL.md`) supplies the verified properties this router inherits:
+swap isolation (0.00% collateral), boundary-example calibration (the §8
+pipeline), and the data-moat addition strategy.
 
-- Replacing one expert's function never perturbs the others. Collateral
-  change is exactly 0.00% in every run, and the reason is structural, not
-  lucky: other experts' profiles cannot depend on the swapped expert.
-- Adding a genuinely new domain breaks the naive approach (retrain
-  everything) through catastrophic forgetting, and the breakage is measured,
-  not hand-waved. A gated one-vs-rest fix recovers most of it. The remainder
-  is a Bayes-error property of the data, not a capacity gap: a 326x larger
-  gate does not help.
-- Adding several domains at once compounds false-capture rates. Three gates
-  at 1% each fire at 3.00% combined. Bonferroni correction restores the rate
-  and costs real recall. Budget it before you build.
-- The flip mechanism replicates on real text (TF-IDF + SVD; semantic
-  embeddings were not tested, see TECHNICAL.md section 8).
+## Status
 
-## Run it
+Research prototype, first verified benchmark. Adapters are stand-in
+per-domain specialist classifiers on TF-IDF + SVD features (the §8 feature
+stack), not real LoRA adapters; the corpus is `corpus/moat_brick2.jsonl`
+(4 domains: finance, law, code, education; Kenyan context).
 
-    python3 -m venv .venv
-    .venv/bin/pip install scikit-learn numpy
-    .venv/bin/python scripts/addition_isolation_suite.py
-    .venv/bin/python scripts/capacity_ablation.py
-    .venv/bin/python scripts/multi_dimension_compounding.py
-    .venv/bin/python scripts/text_validation.py
-    .venv/bin/python scripts/boundary_solutions.py
-    .venv/bin/python scripts/moat_profile_addition.py
-    .venv/bin/python scripts/build_workbook.py   # regenerates performance_data.xlsx
+## Verified benchmark (experiments/benchmark.py, 5 seeds)
 
-Each script prints its own findings and finishes in a minute or two on a
-laptop (moat_profile_addition.py runs a 5-seed multi-arm comparison, so it
-is the slowest). The scripts are the source of truth. The numbers in TECHNICAL.md are
-this repository's canonical run: short experiments (capacity ablation,
-calibration prototype) reproduce to the decimal, longer pipelines reproduce
-the pattern but not always the digits. TECHNICAL.md section 12 says which is
-which, and section 11 lists the honest limits.
+Adapter selection accuracy on clean test (56 inputs/seed; random floor
+19.3%):
+
+| strategy | acc (mean) | note |
+|---|---|---|
+| centroid (task-embedding routing) | 97.9% | LORAUTER-style; ahead by ~1 example/seed |
+| profile (lorouter) | 96.4% | zero learned router params, stable across all 5 seeds |
+| learned router (query→adapter map) | 96.4% | the MoE-LoRA line, simplified |
+| random | 19.3% | floor |
+
+- **Profile routing ties the learned router at 96.4% with zero learned
+  router parameters**, while keeping every decision traceable.
+- **Swap isolation verified in the text setting**: replacing the code
+  adapter with a deliberately weak specialist and re-calibrating its
+  profile changed routing on zero other-domain inputs (0 flips).
+- The centroid gap (+1.4 pts) is one test example per seed — within
+  small-n noise (56 test inputs), reported as such, not as a win.
+
+Run it: `python3 experiments/benchmark.py` (scikit-learn + numpy, CPU-only,
+~1 min). Deterministic seeds; numbers above are the canonical run.
 
 ## Layout
 
-    TECHNICAL.md                    the actual document. read this first.
-    possibility.md                  use cases + the data moat strategy,
-                                    evidence-tiered like TECHNICAL.md
-    performance_data.xlsx           canonical run tables, generated by
-                                    scripts/build_workbook.py
-    scripts/shared_data.py          data generator, experts, profiler, router
-    scripts/addition_isolation_suite.py   swap isolation (4-dim and 5-dim
-                                    pools), addition flips, gated fix,
-                                    multi-seed stability
-    scripts/capacity_ablation.py    small gate vs 326x larger gate
-    scripts/multi_dimension_compounding.py  simultaneous additions, Bonferroni
-    scripts/text_validation.py      real-text flips, calibration prototype
-    scripts/boundary_solutions.py   four mitigations head-to-head (A/B/C/D)
-    scripts/moat_profile_addition.py  data moat: on-the-fly profile insertion
-                                    (frozen profiler) vs joint-retrain
-                                    addition, multi-seed (possibility.md)
-    scripts/build_moat_corpus.py    seeded generator for the moat corpus
-                                    bricks (corpus/moat_brick2, current;
-                                    brick1 in git history)
-    corpus/moat_brick2.jsonl/.csv   current moat brick: finance/law/code/
-                                    education, Kenyan context, 48 boundary
-                                    examples, schema per performance_data.xlsx
-    scripts/build_workbook.py       regenerates performance_data.xlsx
-    assets/profile-moe-demo.mp4     3-minute demo video (hackathon presentation,
-                                    voiceover + visuals; renderable from source
-                                    in the videos project)
+    lorouter/            the router package
+      router.py          Adapter (calibrated competence vectors),
+                         ProfileRouter (profiler + cosine top-k routing),
+                         swap operation
+      corpus.py          moat-corpus loader (split discipline preserved)
+    experiments/
+      benchmark.py       profile vs centroid vs learned vs random,
+                         5 seeds, per-domain breakdown, swap-isolation test
+    corpus/              moat corpus bricks (shared with v2 branch)
 
 ## Honest limits
 
-- No semantic embedding model was available when the text tests were built.
-  The real-text validation is lexical only.
-- The comparison against a learned router used an undertrained baseline. No
-  superiority claim rests on it.
-- Multi-adapter batched serving is prior art (Punica, S-LoRA), not this
-  project's contribution.
-- Exact digits for the multi-stage experiments vary run to run. The
-  conclusions do not. Quote the decimals only where section 12 marks them as
-  stable.
+- Adapters are stand-in classifiers, not real LoRA adapters; no inference
+  integration (vLLM/LoRAX), no latency or memory measurement at serving
+  scale. The serving layer itself remains Punica/S-LoRA/dLoRA territory.
+- Features are lexical (TF-IDF + SVD); no semantic embeddings in the text
+  arm yet.
+- ~13 calibration examples per domain; the p99/p95 threshold sensitivity
+  documented in the parent suite's calibration trial applies here too.
+- No benchmark yet against real LORAUTER-style routing at 1000+ adapters,
+  and no unseen-task generalization test. Those are the next experiments.
 
-## What this is not
+## Related work (verified sources)
 
-Not a framework, not a library, not production routing, not a benchmark
-against other routers. It is a measurement of one design point: what a
-training-free, profile-based router can and cannot guarantee, with the
-failure modes written down before someone else finds them.
+- Punica (arXiv:2310.18547) — multi-tenant LoRA serving, SGMV kernel
+- S-LoRA (arXiv:2311.03285) — thousands of adapters, unified paging
+- dLoRA (Wu et al., OSDI 2024) — dynamic request/adapter orchestration
+- LoRAX (Predibase) — dynamic just-in-time adapter loading
+- LORAUTER (arXiv:2601.21795) — task-representation adapter routing;
+  the closest published approach to this one, with learned task embeddings
+- MoLE line (Muqeeth et al. 2024; ICML 2025; HotMoE AAAI 2026) — learned
+  routers over LoRA experts
