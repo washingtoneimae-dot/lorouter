@@ -387,9 +387,15 @@ Same design contract as brick 1:
 
 Honest status: these are starter bricks, not the moat — a few hundred
 English examples, machine-generated, no human review pass yet, no Swahili/
-sheng coverage, and no profile-calibration trial run against them yet. The
-next brick is human review + code-mixed text, then a calibration trial on
-the §8 pipeline.
+sheng coverage. A calibration trial has now been run against brick 2
+(`scripts/moat_calibration_trial.py`): the §8 property replicates in
+direction — boundary-inclusive calibration raises the gate threshold
+(0.30 → 0.99) and kills false-capture (4.76% → 0.00%); at the 95th
+percentile the recall tradeoff matches §8's canonical numbers
+(100% → 92.9%), while p99 over-tightens at this sample size (recall
+→ 71.4%, boundary escalation 1/7) — the small-n sensitivity is documented
+in the script output. The next brick is human review + code-mixed text,
+then a larger calibration split to stabilize the percentile choice.
 
 ---
 

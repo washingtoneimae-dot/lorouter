@@ -259,7 +259,7 @@ Since each new domain's gate is trained fully independently (no joint retraining
 
 ## 12. Reproducibility
 
-Every numbered finding above has a corresponding runnable script in `scripts/` (`shared_data.py` + seven standalone scripts). Run any of them directly; no external data or network access required.
+Every numbered finding above has a corresponding runnable script in `scripts/` (`shared_data.py` + eight standalone scripts). Run any of them directly; no external data or network access required.
 
 **Checked directly rather than assumed**: re-running these experiments in clean, standalone scripts (as opposed to the original incremental development session) produces the same *qualitative* findings every time, but not bit-identical numbers. Same nominal random seeds do not guarantee identical output once code structure changes how the random-number stream gets consumed — a common and under-discussed reproducibility gap in ML experimentation generally, not specific to this project.
 
@@ -281,9 +281,10 @@ All in `scripts/`, each independently runnable (`python3 <script>.py`), CPU-only
 | `text_validation.py` | §8 (real-text flip replication + systematic calibration-generation prototype) |
 | `boundary_solutions.py` | §6.6 (adaptive-τ localization) plus **Solution D**, added in this review pass: the gated one-vs-rest fix from §4.3/§6.3, benchmarked head-to-head against the original three mitigations in the same harness. Verified: Solutions A/B/C never change which expert wins top-1 (confirmed again here); Solution D does, correctly fixing 2 of 3 flip cases and leaving the third — the genuinely ambiguous one — largely unresolved, exactly matching §6.3's prediction. This is this repository's canonical version of the file, independent of any other repository. |
 | `moat_profile_addition.py` | Data-moat strategy (see `possibility.md` §2): Arm A — frozen profiler over a 7-domain moat, new expert added via on-the-fly profile calibration → **0 collateral flips, 0.000% MSE change, stable across 5 seeds**; Arm B — the same addition via §6's jointly-retrained profiler → 184/900 flips (147/150 on reasoning). Direct head-to-head evidence that pre-covering the domain space converts additions into swaps. |
+| `moat_calibration_trial.py` | §8 replication on the moat corpus (brick 2): (1) addition-flip test on the real-text corpus — joint retrain with a new domain flips base inputs into it; (2) gate calibration clean-only vs clean+boundary — the §8 property replicates in direction (threshold 0.30 → 0.99, false-capture 4.76% → 0.00%); at the 95th percentile the tradeoff matches §8's canonical numbers (recall 100% → 92.9%). Small-n sensitivity at p99 documented in the script output. |
 | `build_workbook.py` | Generates `performance_data.xlsx` (§14) from this canonical run's figures. Writes to a path relative to its own location, so it runs correctly regardless of the current working directory. |
 
-This package's own eight scripts plus this document are sufficient to reproduce every load-bearing claim above. No other repository is required or referenced.
+This package's own nine scripts plus this document are sufficient to reproduce every load-bearing claim above. No other repository is required or referenced.
 
 ---
 
