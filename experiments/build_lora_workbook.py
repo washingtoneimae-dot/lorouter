@@ -82,19 +82,21 @@ def bar(ws, title, cat_ref, data_refs, labels, colors, anchor="H4"):
 # Summary
 # ----------------------------------------------------------------------
 summary_rows = [
-    ["Stand-in benchmark (brick 2, 5 seeds, 56 test/seed)", "profile 96.4% | centroid 97.9% | learned 96.4% | random 19.3%", "experiments/benchmark.py"],
-    ["Swap isolation (text setting, stand-in)", "0 flips on other domains (weak-replacement swap)", "experiments/benchmark.py"],
-    ["Real-LoRA integration (SmolLM2-135M, rank 8, 10 ep)", "routing 96.4% (54/56); differentiation 2/4 diagonal; finance/law adapters favor code (base priors)", "experiments/real_lora_integration.py"],
-    ["Unseen-task (education held out, 14 queries)", "routing stable: education->finance 10/14 (real + stand-in arms agree); oracle agreement 42.9%; loss gap == random (quality OPEN)", "experiments/unseen_task_generalization.py"],
-    ["LORAUTER-style exemplar signal (answer-NLL oracle)", "V1 42.9% / +0.13% | V2a 28.6% / +0.12% (all->code, lexical artifact) | V2b 35.7% / +0.12% | V3 aligned 14/14 routed, +0.04% | ceiling 100%", "experiments/lora_exemplar_routing.py"],
-    ["8-adapter pool (2/domain, disjoint data)", "domain accuracy 96.4% (unchanged); profile min cosine 0.996 (near-duplicate adapters); swap flips 0/56", "experiments/eight_adapter_space.py"],
-    ["Corpus brick 3 (664 ex, 25% calib split)", "p99 clean-only threshold 0.30->0.84, false-capture 4.76%->0.00% vs brick 2 (degeneracy resolved)", "scripts/build_moat_corpus.py + scripts/moat_calibration_trial.py"],
+    ["Stand-in benchmark (brick 2, 5 seeds, 56 test/seed)", "profile 96.4% | centroid 97.9% | learned 96.4% | random 19.3%", "experiments/benchmark.py", "pattern exact; digits stable across 5 seeds"],
+    ["Swap isolation (text setting, stand-in)", "0 flips on other domains (weak-replacement swap)", "experiments/benchmark.py", "exact"],
+    ["Real-LoRA integration (SmolLM2-135M, rank 8, 10 ep)", "routing 96.4% (54/56); differentiation 2/4 diagonal; finance/law adapters favor code (base priors)", "experiments/real_lora_integration.py", "routing pattern exact across runs; loss digits vary run-to-run (GPU nondeterminism)"],
+    ["Unseen-task (education held out, 14 queries)", "routing stable: education->finance 10/14 (real + stand-in arms agree); oracle agreement 42.9%; loss gap == random (quality OPEN)", "experiments/unseen_task_generalization.py", "distribution exact; quality numbers pattern-level"],
+    ["LORAUTER-style exemplar signal (answer-NLL oracle)", "V1 42.9% / +0.13% | V2a 28.6% / +0.12% (all->code, lexical artifact) | V2b 35.7% / +0.12% | V3 aligned 14/14 routed, +0.04% | ceiling 100%", "experiments/lora_exemplar_routing.py", "pattern exact; loss digits vary"],
+    ["8-adapter pool (2/domain, disjoint data)", "domain accuracy 96.4% (unchanged); profile min cosine 0.996 (near-duplicate adapters); swap flips 0/56", "experiments/eight_adapter_space.py", "pattern exact"],
+    ["Corpus brick 3 (664 ex, 25% calib split)", "p99 clean-only threshold 0.30->0.84, false-capture 4.76%->0.00% vs brick 2 (degeneracy resolved)", "scripts/build_moat_corpus.py + scripts/moat_calibration_trial.py", "exact (seeded, deterministic)"],
+    ["Profile-metric design (F9)", "question-only loss profiles -> 73.2% routing (code 0%); answer-conditional -> 96.4%", "experiments/real_lora_integration.py", "pattern exact"],
 ]
 ws = sheet("Summary", "LOROUTER -- canonical results", "Canonical run 2026-08-05, lorouter branch. Scripts are the source of truth.",
-           ["Experiment", "Key result", "Source script"], summary_rows)
-ws.column_dimensions["A"].width = 52
-ws.column_dimensions["B"].width = 95
+           ["Experiment", "Key result", "Source script", "Reproducibility"], summary_rows)
+ws.column_dimensions["A"].width = 50
+ws.column_dimensions["B"].width = 92
 ws.column_dimensions["C"].width = 42
+ws.column_dimensions["D"].width = 52
 
 # ----------------------------------------------------------------------
 # Stand-in benchmark
@@ -162,6 +164,72 @@ bar(ws, "Oracle agreement by routing arm",
     Reference(ws, min_col=1, min_row=5, max_row=11),
     [Reference(ws, min_col=2, min_row=5, max_row=11)],
     ["oracle agreement"], [AMBER])
+
+# ----------------------------------------------------------------------
+# Calibration trial (brick 2 vs brick 3, full table)
+# ----------------------------------------------------------------------
+ws = sheet("CalibrationTrial", "Gate calibration -- brick 2 vs brick 3",
+           "scripts/moat_calibration_trial.py, gate for education, TF-IDF+SVD+MLP. The s8 property: boundary-inclusive calibration raises the threshold and kills false-capture.",
+           ["metric", "brick 2 (n_cal 42)", "brick 3 (n_cal ~110)", "s8 canonical"],
+           [
+               ["p99 clean-only threshold", 0.3048, 0.8439, 0.0031],
+               ["p99 clean+boundary threshold", 0.9920, 0.9393, 0.9943],
+               ["p99 false-capture clean-only", 0.0476, 0.0000, 0.0160],
+               ["p99 false-capture clean+boundary", 0.0000, 0.0000, 0.0000],
+               ["p99 recall clean-only", 1.000, 0.957, 1.000],
+               ["p99 recall clean+boundary", 0.714, 0.826, 0.920],
+               ["p95 clean-only threshold", 0.1361, 0.1283, None],
+               ["p95 clean+boundary threshold", 0.9353, 0.6029, None],
+               ["p95 false-capture clean-only", 0.0476, 0.0290, None],
+               ["p95 false-capture clean+boundary", 0.0000, 0.0000, None],
+               ["p95 recall clean-only", 1.000, 1.000, None],
+               ["p95 recall clean+boundary", 0.929, 1.000, None],
+               ["addition flips (joint retrain, part 1)", 2, 0, "see s6"],
+               ["education-boundary escalation (p99)", "1 of 7", "1 of 17", None],
+           ])
+for r in range(5, 19):
+    for c in (2, 3, 4):
+        v = ws.cell(row=r, column=c).value
+        if isinstance(v, float):
+            ws.cell(row=r, column=c).number_format = "0.0000"
+bar(ws, "p95 thresholds: brick 2 vs brick 3",
+    Reference(ws, min_col=1, min_row=5, max_row=12),
+    [Reference(ws, min_col=2, min_row=5, max_row=12),
+     Reference(ws, min_col=3, min_row=5, max_row=12)],
+    ["brick 2", "brick 3"], [RED, TEAL], anchor="G4")
+
+# ----------------------------------------------------------------------
+# Profile metric design (F9)
+# ----------------------------------------------------------------------
+ws = sheet("ProfileMetric", "Profile metric design (finding F9)",
+           "experiments/real_lora_integration.py, same adapters, two profile definitions. Profiles must measure ANSWER behavior, not question text.",
+           ["profile metric", "routing accuracy", "code domain", "note"],
+           [
+               ["question-only NLL (early design)", 0.732, 0.0, "near-uniform profiles after normalization; code collapsed"],
+               ["answer-conditional NLL (current)", 0.964, 0.929, "signal restored; matches stand-in benchmark"],
+           ])
+for r in range(5, 7):
+    ws.cell(row=r, column=2).number_format = "0.0%"
+    ws.cell(row=r, column=3).number_format = "0.0%"
+bar(ws, "Routing accuracy by profile metric",
+    Reference(ws, min_col=1, min_row=5, max_row=6),
+    [Reference(ws, min_col=2, min_row=5, max_row=6)],
+    ["accuracy"], [AMBER], anchor="E4")
+
+# ----------------------------------------------------------------------
+# Adapter training (final losses, canonical runs)
+# ----------------------------------------------------------------------
+ws = sheet("AdapterTraining", "Adapter training outcomes (final losses)",
+           "SmolLM2-135M-Instruct, rank 8, 10 epochs, 62 QA pairs per domain (4-adapter runs; 31 per variant in the 8-adapter run). GPU nondeterminism: digits vary run-to-run, patterns stable.",
+           ["adapter", "final train loss (4-adapter run)", "final train loss (8-adapter run)", "note"],
+           [
+               ["code", 1.368, None, "code-prior base model favors this domain for all adapters"],
+               ["education", 1.473, None, "steepest descent; overfits its own QA style"],
+               ["finance", 1.555, None, ""],
+               ["law", 1.389, None, ""],
+               ["code_A / code_B", None, "1.477 / (B)", "8-adapter variants trained on 31 QA pairs"],
+               ["law_A / law_B", None, "(A) / 1.582", ""],
+           ])
 
 # ----------------------------------------------------------------------
 # Eight adapter

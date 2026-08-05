@@ -1,0 +1,125 @@
+# REVIEW — Significance of the lorouter angle against current trends
+
+Internal review, 2026-08. Question: is the profile-based adapter-selection
+capability (lorouter) significant relative to what the field is doing right
+now, and where does it stand? Sources are cited inline; every claim about
+this branch's own work is backed by FINDINGS.md and the experiment scripts.
+
+---
+
+## 1. The landscape (researched, mid-2026)
+
+**Adapter selection is a live, active research area.** Multiple
+2025–2026 systems target exactly the problem lorouter addresses — choosing
+which LoRA adapter a request needs:
+
+- **LORAUTER** (arXiv:2601.21795, Jan 2026): task-representation routing;
+  matches Oracle at 101.2% when task-aligned adapters exist, +5.2 points on
+  unseen tasks, robust to 1500+ adapters. Headline claim: route via task
+  embeddings from small validation sets, scaling with #tasks not #adapters.
+- **EdgeLoRA** (arXiv:2507.01438, Jul 2025): multi-tenant edge serving with
+  an *adaptive adapter router* — a TRAINED router (prompt → per-adapter
+  suitability scores, performance as training signal).
+- **LoraRetriever** and **LoRAuter-Selection** (cited within LORAUTER):
+  input-aware single-adapter selection methods.
+- **LoRAMoE / DLP-LoRA / data-free query-adaptive LoRA fusion** (AAAI 2026):
+  the learned-router line continues — MoE-style gating over adapters.
+- **Retrieval-based adapter management** ("Which LoRA Should Be Merged
+  Next?", ACM 2025/26; Stylus for diffusion models): adapter pools as
+  retrieval problems.
+- **A 2026 Springer result on adapter selection for music generation**
+  explicitly reports that *"adapter selection... relies on cosine similarity
+  in the text embedding space, which may not sufficiently disambiguate"* —
+  the embedding-cosine representation is in use elsewhere and documented
+  as weak.
+
+**The anti-learned-router wave is active.** "Routing-Free Mixture-of-
+Experts" (arXiv:2604.00801, Apr 2026) and 2026 field guides describe
+routing-free / self-activating expert designs as an active direction — the
+industry is questioning learned routers from the MoE side. Lorouter asks
+the same question on the adapter-selection side and answers it with
+calibration, not learned parameters.
+
+**Production reality: the gap lorouter targets persists.** vLLM, SGLang,
+LoRAX, Ray Serve and Anyscale all ship multi-LoRA serving in 2026, and
+multi-adapter serving is described as *"the only economically viable
+architecture for multi-tenant SaaS that wants per-customer
+specialization"* (BigDataBoutique, 2026). Adapter lifecycle ownership is a
+production checklist item. But in every shipped stack the request still
+names its adapter (`lora_name`, tenant id) — "wrong adapter served" is a
+documented production failure mode (alias collisions, vLLM/SGLang ops
+guides). **No shipped production system selects adapters from query
+content.**
+
+## 2. Where lorouter sits
+
+| Approach (active 2026) | Representation | Router parameters | Isol./audit |
+|---|---|---|---|
+| EdgeLoRA adapter router | trained scores | learned | no |
+| LoRAMoE / DLP-LoRA gating | learned gates | learned | no |
+| LORAUTER task embeddings | learned task embeddings | learned (embedding) | no |
+| LoraRetriever / embedding-cosine | embedding retrieval | none | no |
+| **lorouter (this branch)** | **calibrated competence profiles** | **zero** | **yes (measured)** |
+
+The distinguishing point is not the routing formula (cosine top-k is
+common) — it is the *representation*: competence profiles are measured by
+calibration against a boundary-dense foundation, not learned. That buys the
+parent suite's verified properties, which none of the listed approaches
+characterize: swap isolation (0.00% structural, F4/F18), addition-as-swap
+under moat coverage (F13), full per-decision traceability, and a
+calibration-discipline failure mode that is documented rather than hidden.
+
+## 3. Significance verdict (honest)
+
+**Timeliness — high.** The problem is being worked on by multiple groups
+right now (2025–26), production adoption is growing, and the gap persists
+in shipped stacks. This is not a solved problem with a forgotten corner.
+
+**Novelty — partial, defensible.** Nothing found in this review occupies
+the calibration-competence-profile point in the design space: zero learned
+router parameters plus measured isolation plus traceability. The nearest
+neighbors use learned embeddings (LORAUTER) or trained routers (EdgeLoRA),
+and embedding-cosine selection is documented as insufficiently
+disambiguating (Springer 2026). The calibration representation is the
+differentiator; it is also the burden (see risks).
+
+**Evidence position — mechanism-grade, not benchmark-grade.** Verified:
+routing ties a learned router at 96.4% (F1), works end-to-end with real
+LoRA adapters (F5), scales to 8 adapters with isolation intact (F15/F18),
+and the aligned-adapter control routes 14/14 (F13). NOT verified: any
+head-to-head against LORAUTER/EdgeLoRA on their benchmarks, 1000+-adapter
+scale, unseen-task quality (F11 — currently open), semantic embeddings,
+or serving-layer integration.
+
+**Competitive risk (stated as plainly as the strengths).** The field may
+converge on learned routers at scale (EdgeLoRA shows the pattern). The
+zero-parameter claim must translate into a measurable production advantage
+— latency, audit cost, or swap cost — or it will read as ideology. The
+lexical-feature ceiling is real: embedding-based approaches will likely
+out-route us on text unless the profile representation earns its keep on
+isolation and calibration grounds. And unseen-task quality is LORAUTER's
+headline — ours is open; that is the single most important gap.
+
+## 4. What the review says to do next (priority order)
+
+1. **Close the unseen-task gap** — the aligned-adapter control (F13)
+   already shows the direction; a real unseen-task benchmark with aligned
+   adapters present is the missing piece to make the LORAUTER comparison
+   honest rather than aspirational.
+2. **Head-to-head vs LORAUTER-style routing on the same corpus** — the
+   exemplar-arm (F12) is a start; a fair comparison needs the same
+   evaluation protocol, not two separate ones.
+3. **Semantic embeddings for the text arm** — removes the documented
+   lexical ceiling and the F12 artifact in one move.
+4. **A serving-layer integration spike (vLLM/LoRAX hook)** — turns
+   "selection policy" from design (§4.2 of possibility.md) into a
+   measured latency number, which is the production-advantage evidence
+   the zero-parameter claim needs.
+5. **Keep the evidence discipline.** Every finding stays script-backed;
+   the open items stay open until they are not.
+
+---
+
+*Review scope: trend research via public sources (cited), internal
+evidence via FINDINGS.md and the experiment scripts. This is an internal
+review — nothing here has been validated by external reviewers.*

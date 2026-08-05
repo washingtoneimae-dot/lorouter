@@ -89,6 +89,8 @@ theory → TECHNICAL.md (inherited from v2).
                            script (the complete evidence record)
       possibility.md       vision: use cases, products, engineering
                            practice, honest limits, roadmap
+      REVIEW.md            internal significance review vs current trends
+                           (2026 landscape, positioning, risks, priorities)
       TECHNICAL.md         parent suite's technical document (v2 branch,
                            inherited): swap isolation, addition problem,
                            calibration, prior-art acknowledgment
