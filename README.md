@@ -67,10 +67,11 @@ which, and section 11 lists the honest limits.
     scripts/moat_profile_addition.py  data moat: on-the-fly profile insertion
                                     (frozen profiler) vs joint-retrain
                                     addition, multi-seed (possibility.md)
-    scripts/build_moat_corpus.py    seeded generator for the first moat
-                                    corpus brick (corpus/moat_brick1)
-    corpus/moat_brick1.jsonl/.csv   first real-text moat brick: finance/
-                                    law/code, Kenyan context, boundary
+    scripts/build_moat_corpus.py    seeded generator for the moat corpus
+                                    bricks (corpus/moat_brick2, current;
+                                    brick1 in git history)
+    corpus/moat_brick2.jsonl/.csv   current moat brick: finance/law/code/
+                                    education, Kenyan context, 48 boundary
                                     examples, schema per performance_data.xlsx
     scripts/build_workbook.py       regenerates performance_data.xlsx
     assets/profile-moe-demo.mp4     3-minute demo video (hackathon presentation,

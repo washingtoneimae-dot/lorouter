@@ -1,24 +1,23 @@
 """
 build_moat_corpus.py
 
-First real brick of the data moat (possibility.md): a small, schema-compliant,
-Kenyan-context natural-language corpus over three domains -- finance, law,
-code -- with systematically-generated boundary examples, built exactly the way
-TECHNICAL.md section 8's printer prototype prescribes: clean examples plus
-mechanically crossed vocabularies, so calibration thresholds can be learned
-from genuine difficulty instead of degenerate clean-only data.
+Moat corpus generator -- brick 2. Continues the first brick (brick 1:
+finance/law/code, 181 examples) with a fourth domain (education, Kenyan
+context), expanded seeds and vocabularies, and a wider boundary-example
+set across all domain pairs.
 
-Schema (implements the 'New Profiler Dataset Design' sheet in
-performance_data.xlsx): example_id, domain_label, text, is_boundary_example,
-cross_domain_hint, split, source, contributor, added_for_version.
+Same design contract as brick 1: seeded and deterministic (re-running
+reproduces the corpus exactly), schema-compliant with the 'New Profiler
+Dataset Design' sheet in performance_data.xlsx, and machine-validated
+(boundary hardness: clean examples are easy for a domain classifier,
+boundary examples are genuinely dual-domain).
 
-Honest status: this is a STARTER corpus (a few hundred examples, machine-
-generated from hand-written seeds, English with Kenyan context). It is the
-first brick of the moat, not the moat. The generator is the source of truth;
-re-running it with the same seed reproduces the corpus exactly.
+Honest status: machine-generated from hand-written seeds, English with
+Kenyan context. No human review pass, no Swahili/sheng coverage. It is the
+second brick of the moat, not the moat.
 
 Run: python3 build_moat_corpus.py   (needs: scikit-learn, numpy)
-Outputs: ../corpus/moat_brick1.jsonl, moat_brick1.csv, plus a printed
+Outputs: ../corpus/moat_brick2.jsonl, moat_brick2.csv, plus a printed
 validation report (split integrity + boundary-hardness check).
 """
 import csv
@@ -28,10 +27,10 @@ from pathlib import Path
 
 import numpy as np
 
-rng = np.random.RandomState(20260805)   # fixed seed: reproducible corpus
+rng = np.random.RandomState(20260806)   # fixed seed: reproducible corpus
 
 OUT_DIR = Path(__file__).resolve().parent.parent / "corpus"
-VERSION = "v2-moat-brick-1"
+VERSION = "v2-moat-brick-2"
 CONTRIBUTOR = "washington"
 
 # ----------------------------------------------------------------------
@@ -48,6 +47,14 @@ FINANCE_SEEDS = [
     "How is forex spread charged when converting KES to USD at a bureau?",
     "What is the penalty for early loan repayment at a Kenyan bank?",
     "How do I track my daily budget using mobile money transaction history?",
+    "How do I open a bank account for my small business in Kenya?",
+    "What is the difference between a salary advance and a personal loan?",
+    "How do I file VAT returns for my online shop?",
+    "What are the charges for sending money from Kenya to Tanzania?",
+    "How does the CBK's digital credit rules affect mobile lenders?",
+    "What is a standing order and how do I set one up?",
+    "How do I invest in treasury bills through my phone?",
+    "Should I use a chama or a Sacco for my savings group?",
 ]
 LAW_SEEDS = [
     "What are my rights when a landlord increases rent without notice in Kenya?",
@@ -60,6 +67,14 @@ LAW_SEEDS = [
     "Are verbal contracts enforceable for goods above a certain value?",
     "What happens when a company director breaches their fiduciary duty?",
     "How does the Companies Act handle a dispute between two shareholders?",
+    "How do I register a trademark for my brand in Kenya?",
+    "What does the Consumer Protection Act say about refunds?",
+    "How do I handle a dispute with a contractor who was paid in advance?",
+    "What are my obligations as a landlord under the Landlord and Tenant Act?",
+    "How does the Small Claims Court work in Kenya?",
+    "What is the penalty for late filing of company returns?",
+    "Can my employer read my personal messages on a work phone?",
+    "How do I make a police report for a bounced cheque?",
 ]
 CODE_SEEDS = [
     "How do I handle HTTP 429 rate-limit errors in a Python API client?",
@@ -72,6 +87,28 @@ CODE_SEEDS = [
     "Explain the difference between a library and a framework.",
     "How do I set up CI/CD for a small Flutter app with GitHub Actions?",
     "What does idempotency mean for a payment webhook handler?",
+    "How do I use environment variables to keep API keys out of source control?",
+    "What is the difference between synchronous and asynchronous code in Python?",
+    "How do I write a unit test for a function that calls an external API?",
+    "What is the best way to version a REST API?",
+    "How do I profile a slow SQL query in PostgreSQL?",
+    "Why should I use a virtual environment for Python projects?",
+    "How do I implement server-side pagination in a GraphQL API?",
+    "What is a webhook and how do I secure its endpoint?",
+]
+EDUCATION_SEEDS = [
+    "How do I apply for a HELB loan as a first-year university student?",
+    "What subjects do I need in KCSE to study computer science?",
+    "How does the KUCCPS placement process work for TVET colleges?",
+    "Can I defer my university admission for one year?",
+    "What is the difference between a diploma and a degree at a Kenyan polytechnic?",
+    "How do I apply for a bursary from the county government?",
+    "What is the cut-off grade for medicine at the University of Nairobi?",
+    "How do I transfer from one university to another mid-degree?",
+    "What are the fees for a private secondary school in Nairobi?",
+    "How does the competency-based curriculum grade junior school students?",
+    "How do I sit KCSE as a private candidate?",
+    "What documents do I need to register for TVET under the new funding model?",
 ]
 
 # ----------------------------------------------------------------------
@@ -104,15 +141,17 @@ LAW_TEMPLATES = [
     "What are the legal steps to {law_action} in Kenya?",
     "Who is liable when {law_scenario}?",
     "What is the penalty for {law_offense} under Kenyan law?",
+    "Does {law_doc} apply to {law_entity}?",
 ]
 LAW_VOCAB = {
-    "law_doc": ["the Data Protection Act 2019", "the Employment Act", "the Companies Act", "the Consumer Protection Act"],
-    "law_topic": ["employee termination", "customer data sharing", "director liability", "unfair market practices"],
-    "law_act": ["dismissing an employee without notice", "processing data without consent", "withholding severance pay", "selling expired goods"],
-    "law_statute": ["Kenyan law", "the Constitution", "the Penal Code", "the Land Act"],
-    "law_action": ["register a trademark", "incorporate a company", "evict a tenant", "file a small claim"],
-    "law_scenario": ["an employee leaks customer data", "a supplier breaches a contract", "a tenant damages property", "a company fails to file returns"],
-    "law_offense": ["fraud", "defamation", "breach of contract", "money laundering"],
+    "law_doc": ["the Data Protection Act 2019", "the Employment Act", "the Companies Act", "the Consumer Protection Act", "the Labour Relations Act", "the Access to Information Act"],
+    "law_topic": ["employee termination", "customer data sharing", "director liability", "unfair market practices", "probationary employment", "airtime data privacy"],
+    "law_act": ["dismissing an employee without notice", "processing data without consent", "withholding severance pay", "selling expired goods", "dismissing a union member", "sharing customer data with third parties"],
+    "law_statute": ["Kenyan law", "the Constitution", "the Penal Code", "the Land Act", "the Labour Relations Act", "the Access to Information Act"],
+    "law_action": ["register a trademark", "incorporate a company", "evict a tenant", "file a small claim", "get a court order", "appeal a tribunal decision"],
+    "law_scenario": ["an employee leaks customer data", "a supplier breaches a contract", "a tenant damages property", "a company fails to file returns", "a board member leaks minutes", "a contractor abandons a site"],
+    "law_offense": ["fraud", "defamation", "breach of contract", "money laundering", "insider trading", "identity theft"],
+    "law_entity": ["a sole trader", "a church", "a school", "a foreign company"],
 }
 
 CODE_TEMPLATES = [
@@ -135,6 +174,29 @@ CODE_VOCAB = {
     "code_tool": ["Redis", "PostgreSQL", "Kafka", "Docker"],
 }
 
+EDUCATION_TEMPLATES = [
+    "What {edu_need} for {edu_level}?",
+    "How do I {edu_action} at {edu_inst}?",
+    "What is the {edu_req} for {edu_prog}?",
+    "How does {edu_policy} work?",
+    "Can I {edu_action2} without {edu_cond}?",
+    "How are {edu_fees2} set at {edu_inst}?",
+    "What is the deadline for {edu_gerund} at {edu_inst}?",
+]
+EDUCATION_VOCAB = {
+    "edu_need": ["subjects are required", "grades do I need", "documents are needed", "fees apply", "results are recognized", "grade requirements apply"],
+    "edu_level": ["KCSE", "a diploma", "university entry", "junior school", "an international curriculum", "a bridging course"],
+    "edu_action": ["apply", "register", "transfer", "defer admission", "apply for re-admission", "appeal my placement"],
+    "edu_inst": ["KUCCPS", "a TVET college", "the University of Nairobi", "a county polytechnic", "a national polytechnic", "a teachers college"],
+    "edu_req": ["cut-off", "requirement", "deadline", "documentation", "grade aggregation", "credit transfer"],
+    "edu_prog": ["medicine", "engineering", "computer science", "a teaching course", "a law degree", "an aviation course"],
+    "edu_policy": ["the CBC grading system", "the 8-4-4 to CBC transition", "the new funding model", "school re-admission policy", "the school capitation formula", "boarding requirements"],
+    "edu_action2": ["sit KCSE as a private candidate", "apply for a bursary", "get a fee waiver", "join a university mid-year", "repeat a year", "change my course"],
+    "edu_cond": ["a KCSE certificate", "a bank account", "a birth certificate", "sponsor approval", "a guarantor", "a medical certificate"],
+    "edu_fees2": ["school fees", "hostel charges", "exam registration fees", "library levies"],
+    "edu_gerund": ["sitting KCSE as a private candidate", "repeating a year", "changing my course", "applying for a bursary", "registering for exams", "submitting transfer papers"],
+}
+
 # ----------------------------------------------------------------------
 # 3. Boundary generation: crossed templates (source=systematic_generation,
 #    is_boundary_example=True) -- genuinely dual-domain subjects
@@ -146,21 +208,55 @@ BOUNDARY_TEMPLATES = [
     ("finance+law", "What are the tax obligations for a business receiving {fin_amt2} via {fin_chan2} per month?"),
     ("finance+law", "Can a {legal_person2} be held liable for {fin_liab} on behalf of their client?"),
     ("finance+law", "What happens to {fin_asset} in a {legal_proc} under Kenyan succession law?"),
+    ("finance+law", "Is it legal to charge interest on a loan given to a minor?"),
+    ("finance+law", "What is the tax treatment of SACCO dividends in Kenya?"),
+    ("finance+law", "Can a digital lender blacklist a borrower who disputes the debt?"),
+    ("finance+law", "What happens to my M-Pesa float if my agent business is shut down?"),
+    ("finance+law", "Who owns the money in a joint bank account when one holder dies?"),
     # finance + code
     ("finance+code", "How do I implement {code_pay} that handles {fin_chan3} callbacks idempotently?"),
     ("finance+code", "What is the safest way to store {fin_data} for a {code_target2} handling {fin_chan4} payments?"),
     ("finance+code", "How do I reconcile {fin_recon} with an {code_tool2} ledger in my fintech backend?"),
     ("finance+code", "What fields should my {code_pay2} validate before debiting a {fin_wallet}?"),
     ("finance+code", "How do I build {code_rate} for a mobile lending API to comply with {fin_lim}?"),
+    ("finance+code", "How do I handle M-Pesa timeout callbacks without double-debiting customers?"),
+    ("finance+code", "How do I build a statement parser that handles multiple Kenyan bank formats?"),
+    ("finance+code", "How do I implement FX rate caching for a remittance app?"),
+    ("finance+code", "How do I avoid floating-point errors converting KES to cents?"),
     # law + code
     ("law+code", "How do I implement {code_consent} for a {code_target3} to comply with the Data Protection Act?"),
     ("law+code", "What should a {code_tool3} project's license say about {law_use}?"),
     ("law+code", "How do I log {law_audit} events in a system that must satisfy {law_req}?"),
     ("law+code", "What is the right way to delete {law_pii} from a production database under {law_reg}?"),
     ("law+code", "Can I legally scrape {law_scrape} for my {code_target4} under Kenyan law?"),
-    # triple boundary
+    ("law+code", "How do I store consent records with tamper-evident timestamps?"),
+    ("law+code", "What fields can a Kenyan edtech app legally collect from minors?"),
+    ("law+code", "How do I build a right-to-erasure endpoint under the Data Protection Act?"),
+    ("law+code", "What license applies if I reuse court judgment text in a legal research app?"),
+    # finance + education
+    ("finance+education", "Can I get a {fin_loan} for {edu_level} if I have no {fin_hist}?"),
+    ("finance+education", "What happens to my {edu_fee} if my {fin_channel5} payment fails at {edu_inst}?"),
+    ("finance+education", "How do I apply for a {edu_bursary} when my parents earn {fin_income}?"),
+    ("finance+education", "Are {edu_doc} released when there is an outstanding {fin_bal} at {edu_inst}?"),
+    ("finance+education", "What is the interest rate on {edu_loan} compared to a {fin_loan2}?"),
+    # law + education
+    ("law+education", "Can a school withhold {edu_doc} over an unpaid {fin_bal} under Kenyan law?"),
+    ("law+education", "What are my rights if {edu_inst} expels me without a hearing?"),
+    ("law+education", "Does the Data Protection Act apply to {edu_data} held by {edu_inst}?"),
+    ("law+education", "Is it legal for {edu_inst} to charge {edu_fee} increases mid-year?"),
+    ("law+education", "What legal recourse do I have if {edu_inst} revokes my {edu_admit}?"),
+    # code + education
+    ("code+education", "How do I build {edu_app} that syncs {edu_data} offline for rural schools?"),
+    ("code+education", "How do I implement {code_grade} for an exam portal used by {edu_many} students?"),
+    ("code+education", "How do I secure {edu_data} in an LMS with {code_role}?"),
+    ("code+education", "How do I build a {code_fee} that reminds parents about {edu_fee} via SMS?"),
+    ("code+education", "How do I scrape {edu_portal} results legally for my {code_target5}?"),
+    # triple boundaries
     ("finance+law+code", "How do I build a {code_pay3} that issues {fin_rec} and archives {law_rec} for audit?"),
     ("finance+law+code", "What does a fintech API need to log to satisfy {law_audit2} and {fin_reg}?"),
+    ("finance+law+education", "How do I build a {edu_app2} that issues {fin_rec} and stores {law_rec} for HELB audits?"),
+    ("finance+law+education", "What does a {fintech_edu} need to log to satisfy {law_audit2} and {edu_reg}?"),
+    ("finance+code+education", "How do I handle {fin_chan3} callbacks in a school {code_fee} without double-debiting parents?"),
 ]
 BOUNDARY_VOCAB = {
     "fin_act": ["transfer", "remit", "lend", "invest"],
@@ -201,6 +297,31 @@ BOUNDARY_VOCAB = {
     "law_rec": ["statutory records", "consent logs", "audit trails", "contract archives"],
     "law_audit2": ["CBK audit rules", "tax requirements", "data protection audits", "anti-money-laundering checks"],
     "fin_reg": ["CBK regulations", "SACCO Society Act rules", "NSE listing rules", "insurance regulations"],
+    # education slots
+    "fin_loan": ["HELB loan", "a student loan", "a fee-financing loan", "a mobile loan"],
+    "fin_hist": ["credit history", "bank statement", "guarantor", "income proof"],
+    "fin_channel5": ["M-Pesa", "bank transfer", "PesaLink", "card"],
+    "edu_level": ["first year", "final year", "junior school", "a diploma course"],
+    "edu_fee": ["school fees", "tuition", "accommodation fees", "exam fees"],
+    "edu_doc": ["transcripts", "a KCSE certificate", "a degree certificate", "admission letters"],
+    "edu_inst": ["a university", "a TVET college", "a private school", "KUCCPS"],
+    "edu_bursary": ["county bursary", "university scholarship", "fee waiver", "HELB hardship grant"],
+    "fin_income": ["less than KES 50,000 a month", "irregular income", "farm income", "no formal income"],
+    "fin_bal": ["fee balance", "library fine", "loan balance", "levy"],
+    "edu_loan": ["HELB loan", "the new student funding model", "a private student loan", "a TVET loan"],
+    "fin_loan2": ["SACCO loan", "bank loan", "mobile loan", "chama contribution"],
+    "edu_data": ["student records", "exam results", "disciplinary files", "special-needs assessments"],
+    "edu_admit": ["admission letter", "placement", "scholarship award", "transfer approval"],
+    "edu_app": ["an e-learning platform", "a school management system", "a revision app", "a bursary portal"],
+    "code_grade": ["a grading engine", "a results checker", "a timetable generator", "an attendance tracker"],
+    "edu_many": ["10,000", "a district", "offline", "low-bandwidth"],
+    "code_role": ["role-based access", "end-to-end encryption", "audit logging", "biometric login"],
+    "code_fee": ["fee payment bot", "invoice generator", "payment reminder", "receipt system"],
+    "edu_portal": ["KUCCPS", "KNEC", "university portals", "county bursary systems"],
+    "code_target5": ["mobile app", "study tool", "analytics dashboard", "news site"],
+    "edu_app2": ["bursary application system", "student loan portal", "school finance system", "scholarship platform"],
+    "fintech_edu": ["student-loan fintech", "school fee platform", "HELB app", "bursary portal"],
+    "edu_reg": ["Ministry of Education rules", "HELB regulations", "KUCCPS guidelines", "university statutes"],
 }
 
 
@@ -210,8 +331,10 @@ def fill(template, vocab, r):
     for m in re.findall(r"\{(\w+)\}", template):
         choices = vocab[m]
         out = out.replace("{" + m + "}", choices[r.randint(len(choices))])
-    # post-process: dedupe doubled articles from vocab crossing ("as a a ...")
-    out = re.sub(r"\b(a|an)\s+\1\b", r"\1", out)
+    # post-process: dedupe doubled articles from vocab crossing
+    # ("as a a ...", "as a an estate") -- keep the second article, which
+    # belongs to the vocab item itself
+    out = re.sub(r"\b(a|an)\s+(a|an)\b", r"\2", out)
     return out
 
 
@@ -223,7 +346,7 @@ def main():
         nonlocal eid
         eid += 1
         examples.append({
-            "example_id": f"brick1-{eid:04d}",
+            "example_id": f"brick2-{eid:04d}",
             "domain_label": domain,
             "text": text,
             "is_boundary_example": boundary,
@@ -236,14 +359,15 @@ def main():
 
     # ---- clean examples: hand-written seeds + systematic fills
     clean_spec = {
-        "finance": (FINANCE_SEEDS, FIN_TEMPLATES, FIN_VOCAB, 55),
-        "law": (LAW_SEEDS, LAW_TEMPLATES, LAW_VOCAB, 55),
-        "code": (CODE_SEEDS, CODE_TEMPLATES, CODE_VOCAB, 55),
+        "finance": (FINANCE_SEEDS, FIN_TEMPLATES, FIN_VOCAB, 90),
+        "law": (LAW_SEEDS, LAW_TEMPLATES, LAW_VOCAB, 90),
+        "code": (CODE_SEEDS, CODE_TEMPLATES, CODE_VOCAB, 90),
+        "education": (EDUCATION_SEEDS, EDUCATION_TEMPLATES, EDUCATION_VOCAB, 90),
     }
     for domain, (seeds, templates, vocab, n_target) in clean_spec.items():
         texts = list(seeds)
         attempts = 0
-        while len(texts) < n_target and attempts < 400:
+        while len(texts) < n_target and attempts < 2500:
             attempts += 1
             t = fill(templates[rng.randint(len(templates))], vocab, rng)
             if t not in texts:
@@ -276,17 +400,18 @@ def main():
 
     # ---- write outputs
     OUT_DIR.mkdir(parents=True, exist_ok=True)
-    with open(OUT_DIR / "moat_brick1.jsonl", "w") as f:
+    stem = "moat_brick2"
+    with open(OUT_DIR / f"{stem}.jsonl", "w") as f:
         for ex in examples:
             f.write(json.dumps(ex) + "\n")
-    with open(OUT_DIR / "moat_brick1.csv", "w", newline="") as f:
+    with open(OUT_DIR / f"{stem}.csv", "w", newline="") as f:
         w = csv.DictWriter(f, fieldnames=list(examples[0].keys()))
         w.writeheader()
         w.writerows(examples)
 
     # ---- validation report
     print("=" * 70)
-    print("MOAT BRICK 1 -- corpus report")
+    print(f"MOAT BRICK 2 -- corpus report ({VERSION})")
     print("=" * 70)
     from collections import Counter
     print(f"total examples: {len(examples)}")
@@ -324,7 +449,7 @@ def main():
           f"(low = genuinely dual-domain, the property §8 requires)")
     print(f"  boundary predicted as:   {dict(Counter(pred_bound))}")
 
-    print(f"\nwrote: {OUT_DIR / 'moat_brick1.jsonl'}, {OUT_DIR / 'moat_brick1.csv'}")
+    print(f"\nwrote: {OUT_DIR / f'{stem}.jsonl'}, {OUT_DIR / f'{stem}.csv'}")
 
 
 if __name__ == "__main__":

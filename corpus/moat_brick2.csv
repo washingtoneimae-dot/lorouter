@@ -1,0 +1,409 @@
+example_id,domain_label,text,is_boundary_example,cross_domain_hint,split,source,contributor,added_for_version
+brick2-0001,finance,How long does a cheque clearance take to reflect in my M-Pesa wallet?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0002,finance,Is it possible to buy treasury bills with a passport without a bank account?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0003,finance,Is it possible to open an account with a passport without a bank account?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0004,finance,How do I reverse a wrong M-Pesa transaction sent to an unknown number?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0005,finance,How long does a bank-to-wallet payment take to reflect in my current account?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0006,finance,Explain the charges for standing orders on an agency bank.,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0007,finance,Should I use a chama or a Sacco for my savings group?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0008,finance,What are the current interest rates for SACCO share capital loans?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0009,finance,What fees apply when I transferring a dollar amount?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0010,finance,What fees apply when I transferring loan repayments?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0011,finance,How do I pay for goods with a SACCO account using Airtel Money?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0012,finance,How do I withdraw cash from a mobile wallet using Airtel Money?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0013,finance,What is the penalty for early loan repayment at a Kenyan bank?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0014,finance,Is it possible to pay a utility bill as a foreigner without a bank account?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0015,finance,"What fees apply when I withdrawing KES 5,000?",False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0016,finance,What are the charges for sending money from Kenya to Tanzania?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0017,finance,What fees apply when I withdrawing insurance premiums?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0018,finance,How is forex spread charged when converting KES to USD at a bureau?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0019,finance,How do I pay for goods with a mobile wallet using an agent till?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0020,finance,How do I save towards a SACCO account using Airtel Money?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0021,finance,How do I send money to a SACCO account using a bank app?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0022,finance,Explain the charges for mobile banking on the stock exchange.,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0023,finance,Is it possible to get a loan as a foreigner without a bank account?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0024,finance,What fees apply when I withdrawing a dollar amount?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0025,finance,How do I track my daily budget using mobile money transaction history?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0026,finance,How do I save towards a mobile wallet using M-Pesa?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0027,finance,What fees apply when I overdrawing loan repayments?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0028,finance,How long does a bank-to-wallet payment take to reflect in my cooperative account?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0029,finance,What fees apply when I overdrawing a dollar amount?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0030,finance,Explain the charges for standing orders on a fintech app.,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0031,finance,Is it possible to pay a utility bill as a minor without a bank account?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0032,finance,Explain the charges for merchant payments on a fintech app.,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0033,finance,How do I pay for goods with a bank card using M-Pesa?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0034,finance,How do I send money to a bank card using M-Pesa?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0035,finance,Explain the difference between M-Shwari and Fuliza loan charges.,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0036,finance,Is there a transaction limit for sending money to a mobile wallet in Uganda?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0037,finance,How do I pay for goods with a mobile wallet using Airtel Money?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0038,finance,How do I withdraw cash from a bank card using a bank app?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0039,finance,How do I save towards an escrow account using Airtel Money?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0040,finance,"What fees apply when I overdrawing KES 5,000?",False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0041,finance,How long does a cheque clearance take to reflect in my cooperative account?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0042,finance,Explain the charges for international transfers on M-Pesa.,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0043,finance,Is it possible to open an account from abroad without a bank account?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0044,finance,How do I pay for goods with a mobile wallet using M-Pesa?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0045,finance,How do I open a bank account for my small business in Kenya?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0046,finance,How do I file VAT returns for my online shop?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0047,finance,What fees apply when I depositing insurance premiums?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0048,finance,How do I read my bank statement to find the total monthly bank charges?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0049,finance,How do I pay for goods with a bank card using Airtel Money?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0050,finance,Should I take a fixed deposit or a money market fund for six months?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0051,finance,How does the CBK's digital credit rules affect mobile lenders?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0052,finance,How do I save towards a SACCO account using an agent till?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0053,finance,How do I pay for goods with an escrow account using an agent till?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0054,finance,How do I send money to a bank card using an agent till?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0055,finance,What fees apply when I depositing a dollar amount?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0056,finance,How do I save towards a mobile wallet using Airtel Money?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0057,finance,What is a standing order and how do I set one up?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0058,finance,How do I save towards a bank card using M-Pesa?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0059,finance,How do I save towards a mobile wallet using an agent till?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0060,finance,Is it possible to buy treasury bills as a minor without a bank account?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0061,finance,Explain the charges for mobile banking on a fintech app.,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0062,finance,What does 'bounce' mean when a cheque is returned unpaid in Kenya?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0063,finance,How do I invest in treasury bills through my phone?,False,,calibration,hand_written,washington,v2-moat-brick-2
+brick2-0064,finance,How do I send money to a SACCO account using M-Pesa?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0065,finance,Explain the charges for mobile banking on an agency bank.,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0066,finance,How do I send money to an escrow account using a bank app?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0067,finance,Is it possible to pay a utility bill from abroad without a bank account?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0068,finance,How do I save towards an escrow account using a bank app?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0069,finance,How long does a PesaLink transfer take to reflect in my savings account?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0070,finance,How do I withdraw cash from a bank card using M-Pesa?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0071,finance,Explain the charges for merchant payments on the stock exchange.,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0072,finance,How do I withdraw cash from a bank card using an agent till?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0073,finance,How do I pay for goods with a bank card using a bank app?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0074,finance,Explain the charges for international transfers on an agency bank.,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0075,finance,What is the difference between a salary advance and a personal loan?,False,,calibration,hand_written,washington,v2-moat-brick-2
+brick2-0076,finance,Explain the charges for standing orders on M-Pesa.,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0077,finance,How long does a cheque clearance take to reflect in my savings account?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0078,finance,Explain the charges for standing orders on the stock exchange.,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0079,finance,Explain the charges for mobile banking on M-Pesa.,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0080,finance,What fees apply when I depositing loan repayments?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0081,finance,Explain the charges for merchant payments on M-Pesa.,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0082,finance,How long does a dividend payout take to reflect in my cooperative account?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0083,finance,Explain the charges for international transfers on the stock exchange.,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0084,finance,How long does a PesaLink transfer take to reflect in my M-Pesa wallet?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0085,finance,How do I pay for goods with an escrow account using Airtel Money?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0086,finance,Is it possible to buy treasury bills as a foreigner without a bank account?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0087,finance,What fees apply when I withdrawing loan repayments?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0088,finance,Is it possible to buy treasury bills from abroad without a bank account?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0089,finance,What fees apply when I overdrawing insurance premiums?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0090,finance,Is it possible to get a loan with a passport without a bank account?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0091,law,Is dismissing an employee without notice allowed under the Penal Code?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0092,law,What are my obligations as a landlord under the Landlord and Tenant Act?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0093,law,What does the Labour Relations Act say about probationary employment?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0094,law,Does the Consumer Protection Act apply to a school?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0095,law,How does the Companies Act handle a dispute between two shareholders?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0096,law,Is dismissing an employee without notice allowed under Kenyan law?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0097,law,Does the Consumer Protection Act apply to a sole trader?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0098,law,What are the legal steps to get a court order in Kenya?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0099,law,Is sharing customer data with third parties allowed under the Constitution?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0100,law,What does the Companies Act say about probationary employment?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0101,law,What does the Consumer Protection Act say about employee termination?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0102,law,Is selling expired goods allowed under the Access to Information Act?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0103,law,Is sharing customer data with third parties allowed under the Access to Information Act?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0104,law,What are the legal steps to appeal a tribunal decision in Kenya?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0105,law,Is withholding severance pay allowed under Kenyan law?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0106,law,Does the Companies Act apply to a foreign company?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0107,law,How does the Small Claims Court work in Kenya?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0108,law,What does the Data Protection Act 2019 say about customer data sharing?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0109,law,Is dismissing a union member allowed under the Constitution?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0110,law,What does the Access to Information Act say about customer data sharing?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0111,law,What are my rights when a landlord increases rent without notice in Kenya?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0112,law,What is the penalty for breach of contract under Kenyan law?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0113,law,What does the Employment Act say about customer data sharing?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0114,law,Does the Data Protection Act 2019 apply to a foreign company?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0115,law,What are the legal steps to evict a tenant in Kenya?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0116,law,Is processing data without consent allowed under Kenyan law?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0117,law,Is withholding severance pay allowed under the Constitution?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0118,law,Is withholding severance pay allowed under the Access to Information Act?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0119,law,Does the Access to Information Act apply to a foreign company?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0120,law,Who is liable when an employee leaks customer data?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0121,law,What happens when a company director breaches their fiduciary duty?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0122,law,How does defamation law apply to posts on X in Kenya?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0123,law,What clauses should a software development NDA include?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0124,law,How do I make a police report for a bounced cheque?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0125,law,What does the Data Protection Act 2019 say about probationary employment?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0126,law,Does the Labour Relations Act apply to a church?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0127,law,What does the Access to Information Act say about director liability?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0128,law,Is withholding severance pay allowed under the Land Act?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0129,law,Is dismissing an employee without notice allowed under the Constitution?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0130,law,What is the penalty for late filing of company returns?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0131,law,How do I register a trademark for my brand in Kenya?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0132,law,Does the Kenya Data Protection Act 2019 apply to a small e-commerce shop?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0133,law,What does the Access to Information Act say about employee termination?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0134,law,Who is liable when a supplier breaches a contract?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0135,law,Does the Data Protection Act 2019 apply to a school?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0136,law,What does the Consumer Protection Act say about airtime data privacy?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0137,law,Is selling expired goods allowed under the Land Act?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0138,law,Does the Employment Act apply to a foreign company?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0139,law,Is selling expired goods allowed under the Penal Code?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0140,law,What does the Consumer Protection Act say about refunds?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0141,law,How do I handle a dispute with a contractor who was paid in advance?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0142,law,Is withholding severance pay allowed under the Penal Code?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0143,law,What is the difference between a lease and a tenancy agreement?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0144,law,What are the legal steps to file a small claim in Kenya?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0145,law,Is dismissing a union member allowed under the Labour Relations Act?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0146,law,Who is liable when a tenant damages property?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0147,law,Are verbal contracts enforceable for goods above a certain value?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0148,law,Does the Access to Information Act apply to a sole trader?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0149,law,Who is liable when a board member leaks minutes?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0150,law,Who is liable when a company fails to file returns?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0151,law,What are the legal steps to incorporate a company in Kenya?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0152,law,What does the Consumer Protection Act say about probationary employment?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0153,law,What does the Consumer Protection Act say about unfair market practices?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0154,law,Can my employer read my personal messages on a work phone?,False,,calibration,hand_written,washington,v2-moat-brick-2
+brick2-0155,law,Who is liable when a contractor abandons a site?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0156,law,What are the legal steps to register a trademark in Kenya?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0157,law,What does the Employment Act say about airtime data privacy?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0158,law,Is selling expired goods allowed under the Labour Relations Act?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0159,law,What does the Consumer Protection Act say about director liability?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0160,law,What does the Data Protection Act 2019 say about director liability?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0161,law,Can an employer terminate a contract without notice under the Employment Act?,False,,calibration,hand_written,washington,v2-moat-brick-2
+brick2-0162,law,Is processing data without consent allowed under the Penal Code?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0163,law,Is dismissing an employee without notice allowed under the Access to Information Act?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0164,law,Does the Data Protection Act 2019 apply to a church?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0165,law,Is dismissing a union member allowed under the Access to Information Act?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0166,law,Does the Companies Act apply to a church?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0167,law,What is the penalty for insider trading under Kenyan law?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0168,law,Is withholding severance pay allowed under the Labour Relations Act?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0169,law,What is the penalty for identity theft under Kenyan law?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0170,law,What is the penalty for fraud under Kenyan law?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0171,law,Is processing data without consent allowed under the Constitution?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0172,law,Does the Labour Relations Act apply to a foreign company?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0173,law,What is the process for registering a business name at the Business Registration Service?,False,,test,hand_written,washington,v2-moat-brick-2
+brick2-0174,law,What does the Employment Act say about unfair market practices?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0175,law,Does the Data Protection Act 2019 apply to a sole trader?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0176,law,Does the Access to Information Act apply to a church?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0177,law,Is sharing customer data with third parties allowed under the Penal Code?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0178,law,What is the penalty for money laundering under Kenyan law?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0179,law,What is the penalty for defamation under Kenyan law?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0180,law,Does the Companies Act apply to a sole trader?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0181,code,How do I securely store OAuth tokens in a mobile app?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0182,code,Explain how to write an idempotent endpoint using PostgreSQL.,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0183,code,How do I write a unit test for a function that calls an external API?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0184,code,Why does my code return stale data when I shard the table?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0185,code,Explain how to build a rate limiter using Redis.,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0186,code,How do I run background jobs without memory leaks?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0187,code,What is the best way to implement authentication for a mobile app?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0188,code,How do I parse JSON in Python?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0189,code,How do I stream large files without memory leaks?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0190,code,What is the best way to implement authentication for a large dataset?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0191,code,How do I retry failed requests in Python?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0192,code,How do I write a Django query that filters by date range?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0193,code,What is the best way to validate user input for a mobile app?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0194,code,How do I implement server-side pagination in a GraphQL API?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0195,code,How do I set up CI/CD for a small Flutter app with GitHub Actions?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0196,code,What is the best way to manage connection pools for a mobile app?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0197,code,How do I cache database queries in JavaScript?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0198,code,How do I roll back a transaction without buffering the whole file?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0199,code,Explain the difference between a library and a framework.,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0200,code,How do I use environment variables to keep API keys out of source control?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0201,code,How do I cache database queries in Go?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0202,code,How do I hash a password in Python?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0203,code,How do I stream large files without race conditions?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0204,code,Explain how to set up structured logging using Kafka.,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0205,code,How do I parse JSON in Go?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0206,code,Why does my code throw a null pointer when I shard the table?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0207,code,What is the best way to validate user input for a payment gateway?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0208,code,Why does my code corrupt the database when I call an external service?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0209,code,How do I stream large files without buffering the whole file?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0210,code,How do I cache database queries in Dart?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0211,code,How do I share state across threads without memory leaks?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0212,code,Why does my code corrupt the database when I deploy to production?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0213,code,What is the best way to handle pagination for an internal API?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0214,code,What is the best way to handle pagination for a large dataset?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0215,code,How do I parse JSON in Dart?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0216,code,Explain how to build a rate limiter using PostgreSQL.,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0217,code,What is the best way to implement authentication for an internal API?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0218,code,How do I share state across threads without blocking the event loop?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0219,code,Explain how to implement retry logic using Docker.,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0220,code,Explain how to write an idempotent endpoint using Docker.,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0221,code,Explain how to write an idempotent endpoint using Redis.,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0222,code,How do I hash a password in Go?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0223,code,Explain how to implement retry logic using Kafka.,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0224,code,How do I debug a race condition in a concurrent Go program?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0225,code,Why does my code return stale data when I deploy to production?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0226,code,How do I cache database queries in Python?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0227,code,Why does my code corrupt the database when I shard the table?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0228,code,What is the best way to version a REST API?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0229,code,What is the best way to validate user input for a large dataset?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0230,code,How do I share state across threads without race conditions?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0231,code,How do I run background jobs without blocking the event loop?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0232,code,How do I parse JSON in JavaScript?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0233,code,Explain how to write an idempotent endpoint using Kafka.,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0234,code,Explain how to build a rate limiter using Kafka.,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0235,code,Why does my code return stale data when I call an external service?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0236,code,Why does my Node.js server crash with an unhandled promise rejection?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0237,code,Explain how to set up structured logging using PostgreSQL.,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0238,code,How do I stream large files without blocking the event loop?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0239,code,Why does my code corrupt the database when I run a migration?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0240,code,What is the difference between synchronous and asynchronous code in Python?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0241,code,Why does my code throw a null pointer when I call an external service?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0242,code,How do I profile a slow SQL query in PostgreSQL?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0243,code,What is a webhook and how do I secure its endpoint?,False,,calibration,hand_written,washington,v2-moat-brick-2
+brick2-0244,code,Why does my code time out when I deploy to production?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0245,code,How do I hash a password in JavaScript?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0246,code,Explain how to build a rate limiter using Docker.,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0247,code,How do I run background jobs without buffering the whole file?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0248,code,What is the best way to paginate a large API response?,False,,calibration,hand_written,washington,v2-moat-brick-2
+brick2-0249,code,Explain how to set up structured logging using Docker.,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0250,code,What is the best way to manage connection pools for an internal API?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0251,code,Explain how to set up structured logging using Redis.,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0252,code,Explain how to implement retry logic using Redis.,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0253,code,What is the best way to manage connection pools for a payment gateway?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0254,code,How do I handle HTTP 429 rate-limit errors in a Python API client?,False,,calibration,hand_written,washington,v2-moat-brick-2
+brick2-0255,code,Why does my code return stale data when I run a migration?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0256,code,What does idempotency mean for a payment webhook handler?,False,,calibration,hand_written,washington,v2-moat-brick-2
+brick2-0257,code,What is the best way to manage connection pools for a large dataset?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0258,code,Why does my code time out when I call an external service?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0259,code,How do I retry failed requests in JavaScript?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0260,code,Why does my code throw a null pointer when I run a migration?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0261,code,How do I hash a password in Dart?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0262,code,What is the difference between a left join and an inner join in SQL?,False,,test,hand_written,washington,v2-moat-brick-2
+brick2-0263,code,How do I roll back a transaction without blocking the event loop?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0264,code,Why should I use a virtual environment for Python projects?,False,,test,hand_written,washington,v2-moat-brick-2
+brick2-0265,code,Explain how to implement retry logic using PostgreSQL.,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0266,code,How do I share state across threads without buffering the whole file?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0267,code,How do I roll back a transaction without race conditions?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0268,code,How do I roll back a transaction without memory leaks?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0269,code,Why does my code throw a null pointer when I deploy to production?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0270,code,What is the best way to implement authentication for a payment gateway?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0271,education,What is the cut-off grade for medicine at the University of Nairobi?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0272,education,What is the deadline for sitting KCSE as a private candidate at a national polytechnic?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0273,education,What are the fees for a private secondary school in Nairobi?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0274,education,What is the deadline for registering for exams at KUCCPS?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0275,education,How do I apply for re-admission at a TVET college?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0276,education,What results are recognized for an international curriculum?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0277,education,What is the deadline for submitting transfer papers at the University of Nairobi?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0278,education,Can I apply for a bursary without a KCSE certificate?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0279,education,How do I register at a national polytechnic?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0280,education,Can I get a fee waiver without a bank account?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0281,education,Can I join a university mid-year without a bank account?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0282,education,What results are recognized for KCSE?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0283,education,Can I defer my university admission for one year?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0284,education,What is the deadline for changing my course at a teachers college?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0285,education,How are exam registration fees set at the University of Nairobi?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0286,education,What grade requirements apply for junior school?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0287,education,Can I join a university mid-year without a birth certificate?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0288,education,What is the deadline for sitting KCSE as a private candidate at a county polytechnic?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0289,education,Can I get a fee waiver without a birth certificate?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0290,education,Can I join a university mid-year without a guarantor?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0291,education,Can I change my course without a birth certificate?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0292,education,How do I transfer from one university to another mid-degree?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0293,education,What is the deadline for repeating a year at the University of Nairobi?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0294,education,What is the credit transfer for medicine?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0295,education,What is the credit transfer for a teaching course?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0296,education,How do I apply at KUCCPS?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0297,education,What is the documentation for engineering?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0298,education,What fees apply for a diploma?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0299,education,How do I apply at the University of Nairobi?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0300,education,How are school fees set at a TVET college?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0301,education,What is the grade aggregation for a law degree?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0302,education,What documents are needed for an international curriculum?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0303,education,What is the difference between a diploma and a degree at a Kenyan polytechnic?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0304,education,How are hostel charges set at a teachers college?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0305,education,How does the new funding model work?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0306,education,How does the school capitation formula work?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0307,education,How do I sit KCSE as a private candidate?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0308,education,How does the CBC grading system work?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0309,education,What results are recognized for junior school?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0310,education,How are hostel charges set at KUCCPS?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0311,education,How are library levies set at a county polytechnic?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0312,education,What is the documentation for medicine?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0313,education,What is the documentation for a teaching course?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0314,education,Can I apply for a bursary without a medical certificate?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0315,education,How do I apply for a bursary from the county government?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0316,education,Can I change my course without a guarantor?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0317,education,Can I sit KCSE as a private candidate without a KCSE certificate?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0318,education,What is the deadline for submitting transfer papers at KUCCPS?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0319,education,What is the deadline for sitting KCSE as a private candidate at KUCCPS?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0320,education,How does school re-admission policy work?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0321,education,What is the deadline for sitting KCSE as a private candidate at the University of Nairobi?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0322,education,How do I transfer at a TVET college?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0323,education,How does the competency-based curriculum grade junior school students?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0324,education,What grades do I need for junior school?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0325,education,How are library levies set at a TVET college?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0326,education,How are exam registration fees set at a national polytechnic?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0327,education,What subjects are required for a diploma?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0328,education,What is the deadline for applying for a bursary at a national polytechnic?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0329,education,How do I apply for a HELB loan as a first-year university student?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0330,education,What documents do I need to register for TVET under the new funding model?,False,,train,hand_written,washington,v2-moat-brick-2
+brick2-0331,education,What is the deadline for registering for exams at a national polytechnic?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0332,education,What is the cut-off for medicine?,False,,train,systematic_generation,washington,v2-moat-brick-2
+brick2-0333,education,Can I join a university mid-year without a medical certificate?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0334,education,How are school fees set at a county polytechnic?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0335,education,How do I apply at a teachers college?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0336,education,How are hostel charges set at a national polytechnic?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0337,education,What is the grade aggregation for computer science?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0338,education,What is the deadline for changing my course at KUCCPS?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0339,education,How do I register at a teachers college?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0340,education,How do I apply for re-admission at the University of Nairobi?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0341,education,How are school fees set at a national polytechnic?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0342,education,How do I transfer at the University of Nairobi?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0343,education,How are exam registration fees set at a TVET college?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0344,education,How does the 8-4-4 to CBC transition work?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0345,education,What is the deadline for computer science?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0346,education,How are hostel charges set at the University of Nairobi?,False,,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0347,education,How do I apply for re-admission at a teachers college?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0348,education,How do I defer admission at a TVET college?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0349,education,What subjects do I need in KCSE to study computer science?,False,,test,hand_written,washington,v2-moat-brick-2
+brick2-0350,education,What is the deadline for registering for exams at a TVET college?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0351,education,How are school fees set at KUCCPS?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0352,education,How does the KUCCPS placement process work for TVET colleges?,False,,test,hand_written,washington,v2-moat-brick-2
+brick2-0353,education,How does boarding requirements work?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0354,education,Can I sit KCSE as a private candidate without a bank account?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0355,education,What grades do I need for a diploma?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0356,education,How are library levies set at a national polytechnic?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0357,education,How are library levies set at KUCCPS?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0358,education,What is the deadline for sitting KCSE as a private candidate at a TVET college?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0359,education,What grade requirements apply for university entry?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0360,education,How are school fees set at a teachers college?,False,,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0361,boundary,Can a digital lender be held liable for a mistaken transfer on behalf of their client?,True,finance+law,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0362,boundary,Can I get a mobile loan for final year if I have no credit history?,True,finance+education,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0363,boundary,How do I build a invoice generator that reminds parents about school fees via SMS?,True,code+education,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0364,boundary,How do I scrape county bursary systems results legally for my analytics dashboard?,True,code+education,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0365,boundary,How do I implement FX rate caching for a remittance app?,True,finance+code,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0366,boundary,How do I handle M-Pesa timeout callbacks without double-debiting customers?,True,finance+code,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0367,boundary,How do I implement a consent screen for a SaaS product to comply with the Data Protection Act?,True,law+code,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0368,boundary,How do I implement a grading engine for an exam portal used by offline students?,True,code+education,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0369,boundary,What legal recourse do I have if a TVET college revokes my placement?,True,law+education,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0370,boundary,How do I implement a checkout flow that handles M-Pesa callbacks idempotently?,True,finance+code,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0371,boundary,Can a school withhold transcripts over an unpaid fee balance under Kenyan law?,True,law+education,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0372,boundary,Is it legal for a lender to repossess collateral when the borrower defaults twice?,True,finance+law,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0373,boundary,Are transcripts released when there is an outstanding levy at KUCCPS?,True,finance+education,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0374,boundary,How do I apply for a county bursary when my parents earn no formal income?,True,finance+education,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0375,boundary,What does a HELB app need to log to satisfy tax requirements and HELB regulations?,True,finance+law+education,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0376,boundary,How do I build a spending guard for a mobile lending API to comply with daily caps?,True,finance+code,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0377,boundary,Can a digital lender blacklist a borrower who disputes the debt?,True,finance+law,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0378,boundary,Is it legal to charge interest on a loan given to a minor?,True,finance+law,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0379,boundary,How do I secure student records in an LMS with audit logging?,True,code+education,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0380,boundary,How do I handle Airtel Money callbacks in a school invoice generator without double-debiting parents?,True,finance+code+education,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0381,boundary,What license applies if I reuse court judgment text in a legal research app?,True,law+code,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0382,boundary,Can I legally scrape social media profiles for my price tracker under Kenyan law?,True,law+code,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0383,boundary,How do I store consent records with tamper-evident timestamps?,True,law+code,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0384,boundary,What happens to a vehicle logbook in a divorce under Kenyan succession law?,True,finance+law,calibration,systematic_generation,washington,v2-moat-brick-2
+brick2-0385,boundary,Does the Data Protection Act apply to disciplinary files held by KUCCPS?,True,law+education,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0386,boundary,What happens to my M-Pesa float if my agent business is shut down?,True,finance+law,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0387,boundary,What are the tax obligations for a business receiving more than 500 transactions via a forex bureau per month?,True,finance+law,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0388,boundary,What does a fintech API need to log to satisfy CBK audit rules and SACCO Society Act rules?,True,finance+law+code,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0389,boundary,What should a government project's license say about redistribution?,True,law+code,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0390,boundary,What is the right way to delete biometric data from a production database under GDPR?,True,law+code,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0391,boundary,How do I build a billing engine that issues settlement reports and archives consent logs for audit?,True,finance+law+code,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0392,boundary,How do I build a student loan portal that issues digital receipts and stores contract archives for HELB audits?,True,finance+law+education,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0393,boundary,What is the interest rate on a private student loan compared to a SACCO loan?,True,finance+education,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0394,boundary,Is it legal for a private school to charge school fees increases mid-year?,True,law+education,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0395,boundary,What fields can a Kenyan edtech app legally collect from minors?,True,law+code,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0396,boundary,What is the tax treatment of SACCO dividends in Kenya?,True,finance+law,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0397,boundary,How do I log deletion events in a system that must satisfy court orders?,True,law+code,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0398,boundary,How do I build a right-to-erasure endpoint under the Data Protection Act?,True,law+code,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0399,boundary,How do I reconcile daily settlements with an Redis ledger in my fintech backend?,True,finance+code,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0400,boundary,How do I avoid floating-point errors converting KES to cents?,True,finance+code,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0401,boundary,How do I build a bursary portal that syncs special-needs assessments offline for rural schools?,True,code+education,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0402,boundary,What fields should my refund job validate before debiting a escrow account?,True,finance+code,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0403,boundary,Who owns the money in a joint bank account when one holder dies?,True,finance+law,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0404,boundary,What are my rights if a private school expels me without a hearing?,True,law+education,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0405,boundary,What legal documents do I need to transfer mobile money through a bank as an estate?,True,finance+law,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0406,boundary,What is the safest way to store card numbers for a web dashboard handling crypto payments?,True,finance+code,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0407,boundary,What happens to my tuition if my card payment fails at KUCCPS?,True,finance+education,test,systematic_generation,washington,v2-moat-brick-2
+brick2-0408,boundary,How do I build a statement parser that handles multiple Kenyan bank formats?,True,finance+code,test,systematic_generation,washington,v2-moat-brick-2

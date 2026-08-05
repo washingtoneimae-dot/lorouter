@@ -349,40 +349,47 @@ document.
 
 ---
 
-## 7. The first brick: a real-text starter corpus (built, machine-validated)
+## 7. The first bricks: real-text starter corpora (built, machine-validated)
 
-The moat is a strategy until it is data. This repository now carries the
-first real brick: `corpus/moat_brick1.jsonl` (+ `.csv`), a small,
-schema-compliant, Kenyan-context natural-language corpus over three domains
-(finance, law, code) with systematically-generated boundary examples.
+The moat is a strategy until it is data. This repository now carries two
+real bricks, produced by the same seeded generator
+(`scripts/build_moat_corpus.py`, deterministic — re-running reproduces the
+corpus exactly):
 
-- **How it was built**: `scripts/build_moat_corpus.py` — a seeded,
-  deterministic generator (re-running it reproduces the corpus exactly).
-  30 hand-written seed examples anchor realism; the rest come from
-  template-by-vocabulary systematic generation; boundary examples are
-  crossed-domain templates (the §8 printer method, applied mechanically).
+- **Brick 1** (`corpus/moat_brick1.*`, in git history): finance/law/code,
+  181 examples. The smallest defensible version.
+- **Brick 2** (current, `corpus/moat_brick2.jsonl` + `.csv`): **408
+  examples** — finance 90, law 90, code 90, education 90 (new domain,
+  Kenyan context: HELB, KCSE, KUCCPS, bursaries), plus **48 boundary
+  examples** across every domain pair (finance+law 10, finance+code 9,
+  law+code 9, finance+education 5, law+education 5, code+education 5,
+  and 5 triple crossings).
+
+Same design contract as brick 1:
+
+- **How it was built**: 66 hand-written seed examples anchor realism; the
+  rest come from template-by-vocabulary systematic generation; boundary
+  examples are crossed-domain templates (the §8 printer method, applied
+  mechanically). The combination space is fully enumerated per domain —
+  the generator is not sampling-constrained, it exhausts its templates.
 - **Schema**: implements the "New Profiler Dataset Design" sheet in
   `performance_data.xlsx` — example_id, domain_label, text,
   is_boundary_example, cross_domain_hint, split, source, contributor,
   added_for_version.
-- **Contents**: 181 examples — finance 55, law 54, code 55, boundary 17
-  (finance+law 5, law+code 5, finance+code 5, triple 2); splits
-  113 train / 32 calibration / 36 test (calibration and test never overlap
-  train, per §5.3's held-out rule); sources 30 hand_written /
-  151 systematic_generation.
+- **Splits**: 248 train / 80 calibration / 80 test (calibration and test
+  never overlap train, per §5.3's held-out rule); sources 66 hand_written /
+  342 systematic_generation.
 - **Machine validation** (printed by the generator): ids and texts unique;
   a TF-IDF + logistic-regression classifier trained on clean train reaches
-  **92.6% on clean test but 0.0% on boundary test** — the boundary examples
+  **96.4% on clean test but 0.0% on boundary test** — the boundary examples
   are genuinely dual-domain, exactly the property §8 requires for
   non-degenerate calibration thresholds.
 
-Honest status: this is a starter brick, not the moat — a few hundred
+Honest status: these are starter bricks, not the moat — a few hundred
 English examples, machine-generated, no human review pass yet, no Swahili/
-sheng coverage, and no profile-calibration trial run against it yet. It is
-the smallest defensible version of the asset, built to the same evidence
-standard as the rest of the suite. The next brick is human review + one
-more domain (or code-mixed text), then a calibration trial on the §8
-pipeline.
+sheng coverage, and no profile-calibration trial run against them yet. The
+next brick is human review + code-mixed text, then a calibration trial on
+the §8 pipeline.
 
 ---
 
