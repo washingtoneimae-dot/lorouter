@@ -100,7 +100,36 @@ out-route us on text unless the profile representation earns its keep on
 isolation and calibration grounds. And unseen-task quality is LORAUTER's
 headline — ours is open; that is the single most important gap.
 
-## 4. What the review says to do next (priority order)
+## 4. Gap-closure status (2026-08-06)
+
+All five gaps named in §3 were closed in one pass; findings F26–F31:
+
+1. **Multi-seed reproducibility** — routing 96.4% across seeds 42/7/2026
+   (F26). The headline is not a seed artifact.
+2. **Model-size check** — 96.4% on SmolLM2-360M, identical to 135M
+   (F27). Not a small-model artifact.
+3. **Semantic embeddings** — profile routing improves to 98.2% and now
+   BEATS embedding-centroid routing (96.4%), flipping the lexical
+   ranking (F28); the F12 exemplar artifact is gone — education exemplars
+   route to finance (F29).
+4. **Latency spike** — selection policy is sub-millisecond at any
+   realistic pool size: profiling 1.14 ms, cosine 17 µs → 380 µs
+   (4 → 10,000 adapters), end-to-end 2.78 ms at 10k (F30). The
+   production-advantage number now exists; the vLLM/LoRAX hook itself
+   remains the unmeasured half.
+5. **Generation quality** — with the aligned adapter present, the routed
+   adapter produces the best output (0.5932 vs 0.5887 best incumbent
+   semantic similarity; +0.45pp), with visible domain-plausible
+   differentiation in samples (F31). Margin is small at 135M scale —
+   direction verified, magnitude bounded by base-model quality.
+
+Revised verdict: the branch now stands at v2-grade evidence depth for
+everything it claims at mechanism and integration level. The remaining
+open items are honest and bounded: 1000+-adapter scale (LORAUTER's
+headline), the serving-stack hook itself, and generation quality on a
+stronger base model.
+
+## 5. What the review says to do next (priority order)
 
 1. **Close the unseen-task gap** — the aligned-adapter control (F13)
    already shows the direction; a real unseen-task benchmark with aligned

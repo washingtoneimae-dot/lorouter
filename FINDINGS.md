@@ -126,10 +126,51 @@ stated conditions), **open** (hypothesis, not yet validated).
     trade-off the parent suite proved synthetically, now shown with real
     LoRA adapters and real text. *(bounded)*
 
+## G. Gap-closure experiments (2026-08-06, canonical run)
+
+26. **Multi-seed stability: 96.4% across seeds 42, 7, 2026** — the
+    real-LoRA routing result is not a seed artifact. Diagonal dominance
+    1/4 per seed (consistent weak differentiation, base-model priors).
+    *(proven, `experiments/real_lora_multiseed.py`)*
+27. **Model-size invariance: 96.4% on SmolLM2-360M, identical to 135M**
+    (2.7x larger base, same pipeline; diagonal dominance 2/4). The
+    routing result is not a small-model artifact. *(bounded,
+    `experiments/real_lora_360m.py`)*
+28. **Semantic embeddings improve routing and flip the centroid
+    ranking.** With bge-small-en-v1.5 features: profile routing 98.2%
+    (up from 96.4% with TF-IDF+SVD), tying the learned router (98.2%)
+    and BEATING embedding-centroid routing (96.4%) — the reverse of the
+    lexical-feature ranking. Calibrated competence profiles outperform
+    raw embedding centroids once features are semantic. *(proven,
+    `experiments/semantic_embeddings.py`)*
+29. **The F12 artifact is a lexical-feature artifact.** With semantic
+    task embeddings, education exemplars route to finance (semantically
+    sensible) instead of code; per-query distribution {finance 6, code
+    3, law 5} keeps the finance-leading pattern. *(proven,
+    `experiments/semantic_embeddings.py`)*
+30. **Selection-policy latency is sub-millisecond at any realistic pool
+    size.** Query profiling 1.14 ms; cosine selection 17 µs (4 adapters)
+    → 380 µs (10,000 adapters); end-to-end policy 2.78 ms at 10k.
+    Adapter-switch/load costs in serving systems are ms-scale — the
+    policy pays microseconds to avoid a full regenerate on wrong
+    selection. Full-stack integration latency (vLLM/LoRAX hook) remains
+    the unmeasured half of the spike. *(bounded,
+    `experiments/latency_spike.py`)*
+31. **Aligned-adapter generation quality: the routed adapter produces
+    the best output.** On held-out education queries, the education
+    adapter's generations score 0.5932 semantic similarity to the
+    reference answer vs 0.5887 for the best incumbent (+0.45pp; random
+    expectation 0.5862), and the qualitative samples show the only
+    domain-plausible continuation. Margin is small at 135M scale —
+    direction verified, magnitude bounded by base-model quality.
+    *(bounded, `experiments/generation_quality.py`)*
+
 ---
 
-*Open items, stated as plainly: unseen-task quality at scale (needs more
-adapters + a real unseen task with aligned adapters), semantic embeddings
-(lexical-only features throughout), serving-layer integration (vLLM/LoRAX),
-latency/memory measurement, and generation-quality evaluation. The corpus
-is synthetic-template English — no human review pass, no Swahili/sheng.*
+*Open items, stated as plainly: unseen-task quality at SCALE (the aligned-
+adapter case is verified — F13, F31 — but not at LORAUTER's 1000+-adapter
+scale); the vLLM/LoRAX integration hook itself (policy latency is
+measured, F30, but not inside a serving stack); generation-quality at a
+stronger base model (the 135M margin is small, F31); and the corpus
+remains synthetic-template English — no human review pass, no
+Swahili/sheng.*

@@ -232,6 +232,78 @@ ws = sheet("AdapterTraining", "Adapter training outcomes (final losses)",
            ])
 
 # ----------------------------------------------------------------------
+# Gap-closure sheets (2026-08-06)
+# ----------------------------------------------------------------------
+ws = sheet("SemanticBenchmark", "Semantic embeddings arm (bge-small-en-v1.5)",
+           "experiments/semantic_embeddings.py, brick 2, 5 seeds (same corpus as the TF-IDF benchmark -- like-for-like). Semantic features improve profile routing to 98.2% and flip the centroid ranking (F28).",
+           ["strategy", "semantic acc", "TF-IDF+SVD acc", "note"],
+           [
+               ["profile (lorouter)", 0.9821, 0.9643, "now BEATS centroid; ties learned"],
+               ["centroid (embedding)", 0.9643, 0.9786, "ranking flipped vs lexical features"],
+               ["learned router", 0.9821, 0.9643, ""],
+               ["random", 0.1929, 0.1929, "floor"],
+           ])
+for r in range(5, 9):
+    for c in (2, 3):
+        ws.cell(row=r, column=c).number_format = "0.00%"
+bar(ws, "Semantic vs TF-IDF features: profile routing",
+    Reference(ws, min_col=1, min_row=5, max_row=8),
+    [Reference(ws, min_col=2, min_row=5, max_row=8),
+     Reference(ws, min_col=3, min_row=5, max_row=8)],
+    ["semantic", "TF-IDF+SVD"], [TEAL, RED], anchor="F4")
+ws = sheet("UnseenSemantic", "Unseen-task exemplar routing: F12 retest",
+           "experiments/semantic_embeddings.py. The lexical artifact (all->code) disappears with semantic task embeddings (F29).",
+           ["features", "task-level (10 exemplars)", "per-query distribution"],
+           [
+               ["TF-IDF+SVD (old)", "code (artifact)", "finance 10, code 2, law 2"],
+               ["bge-small-en-v1.5", "finance (sensible)", "finance 6, code 3, law 5"],
+           ])
+ws = sheet("ModelScale", "Model-size + seed invariance",
+           "real_lora_multiseed.py (seeds 42/7/2026) + real_lora_360m.py. Routing accuracy is stable across seeds and model sizes (F26, F27).",
+           ["model", "seeds", "routing acc", "diagonal dominance"],
+           [
+               ["SmolLM2-135M", "42, 7, 2026", "96.4 / 96.4 / 96.4", "1/4 each"],
+               ["SmolLM2-360M", "42", "96.4%", "2/4"],
+           ])
+ws = sheet("Latency", "Selection-policy latency spike",
+           "experiments/latency_spike.py, warm mean of 1000 queries. Policy is sub-ms at any realistic pool size (F30).",
+           ["pool size N", "cosine selection (us)", "query profiling (ms)", "end-to-end (ms)"],
+           [
+               [4, 16.9, 1.140, 1.157],
+               [8, 26.6, 1.140, 1.167],
+               [100, 24.5, 1.140, 1.165],
+               [1000, 65.2, 1.140, 1.205],
+               [10000, 379.5, 1.140, 2.775],
+           ])
+for r in range(5, 10):
+    ws.cell(row=r, column=2).number_format = "0.0"
+lc = LineChart()
+lc.title = "Selection latency vs pool size"
+lc.style = 12
+lc.height = 9
+lc.width = 20
+data = Reference(ws, min_col=2, min_row=4, max_row=9)
+cats = Reference(ws, min_col=1, min_row=5, max_row=9)
+lc.add_data(data, titles_from_data=True)
+lc.set_categories(cats)
+ws.add_chart(lc, "F4")
+ws = sheet("GenerationQuality", "Aligned-adapter generation quality",
+           "experiments/generation_quality.py: education held out, generations scored by bge-small similarity to reference (F31).",
+           ["adapter", "mean similarity", "note"],
+           [
+               ["education (aligned)", 0.5932, "routed choice; best output; only domain-plausible continuation in samples"],
+               ["code (best incumbent)", 0.5887, ""],
+               ["law", 0.5839, "random expectation 0.5862"],
+               ["finance", 0.5792, ""],
+           ])
+for r in range(5, 9):
+    ws.cell(row=r, column=2).number_format = "0.0000"
+bar(ws, "Generation similarity to reference by adapter",
+    Reference(ws, min_col=1, min_row=5, max_row=8),
+    [Reference(ws, min_col=2, min_row=5, max_row=8)],
+    ["similarity"], [AMBER], anchor="D4")
+
+# ----------------------------------------------------------------------
 # Eight adapter
 # ----------------------------------------------------------------------
 ws = sheet("EightAdapter", "Eight-adapter pool (2/domain)",

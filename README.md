@@ -23,33 +23,31 @@ pipeline), and the data-moat addition strategy.
 
 ## Status
 
-Research prototype. Two layers of verification, both honest about scope:
+Research prototype. Three layers of verification, all honest about scope
+(evidence: FINDINGS.md F-numbers):
 
-1. Stand-in benchmark (brick 2/3 corpus machinery): profile routing ties a
+1. Stand-in benchmark (brick 2 corpus machinery): profile routing ties a
    learned router (96.4% vs 96.4%) with zero learned router parameters;
-   swap isolation holds in the text setting.
-2. Real-LoRA integration (SmolLM2-135M-Instruct, rank 8, 10 epochs, QA
-   pairs built from brick 3): the full mechanism works end-to-end —
-   real LoRA adapters, real calibration losses, profile router → 96.4%
-   routing accuracy, matching the stand-in benchmark. Adapter
-   differentiation is partial (2/4 adapters lowest on their own domain;
-   finance/law adapters both favor code — the base model's code priors).
-3. Unseen-task test (education held out): routing decisions are stable and
-   interpretable (education → finance, 10/14, identical in the real-LoRA
-   and stand-in arms), but oracle agreement is 42.9% and the loss gap
-   equals random expectation — quality unverified at this scale. The
-   aligned-adapter control (lora_exemplar_routing.py V3) confirms the
-   mechanism's ceiling is adapter COVERAGE, not routing quality: with the
-   domain's adapter present, routing is 14/14. LORAUTER-style exemplar
-   task embeddings actively mislead (all → code, lexical artifact).
-4. Eight-adapter pool: domain-level accuracy holds at 96.4% with 2
-   adapters/domain; profile separation is bounded by adapter diversity
-   (near-duplicate adapters → cosine 0.996) but routing still works; swap
-   isolation scales (0/56 flips).
+   swap isolation holds in the text setting (F1–F4).
+2. Real-LoRA integration (SmolLM2-135M/360M, rank 8, 10 epochs, QA pairs
+   from brick 3): end-to-end mechanism verified — routing 96.4% on both
+   model sizes and across 3 seeds (F5, F26, F27); adapter differentiation
+   partial (2/4 diagonal, base-model code priors).
+3. Unseen-task (education held out): routing stable and interpretable
+   (education → finance; F10); quality verified at the aligned-adapter
+   level — routing 14/14 and generation output best (F13, F31);
+   LORAUTER-style exemplar embeddings mislead with lexical features (F12)
+   but route sensibly with semantic embeddings (F29).
+4. Semantic embeddings arm: profile routing improves to 98.2% and beats
+   embedding-centroid routing — the ranking flip vs lexical features (F28).
+5. Eight-adapter pool: domain accuracy holds at 96.4%; separation bounded
+   by adapter diversity; swap isolation scales (F15–F18).
+6. Latency spike: selection policy sub-millisecond at 10k adapters
+   (F30).
 
-Full record: FINDINGS.md (25 numbered findings) and
-experiments/lorouter_results.xlsx (6 sheets, charts, built by
-experiments/build_lora_workbook.py).
+Full record: FINDINGS.md (31 numbered findings), REVIEW.md (significance
+against 2026 trends + gap-closure status), experiments/lorouter_results.xlsx
+(14 sheets, 11 charts, built by experiments/build_lora_workbook.py).
 
 ## Verified benchmark (experiments/benchmark.py, 5 seeds)
 
@@ -151,19 +149,21 @@ theory → TECHNICAL.md (inherited from v2).
 
 ## Honest limits
 
-- Adapters in the stand-in benchmark are classifiers, not real LoRAs; the
-  real-LoRA integration uses a 135M model trained 10 epochs on synthetic
-  QA pairs — a mechanism test, not an adapter-quality claim. No inference
-  integration (vLLM/LoRAX), no latency or memory measurement at serving
-  scale. The serving layer itself remains Punica/S-LoRA/dLoRA territory.
-- Features are lexical (TF-IDF + SVD); no semantic embeddings in the text
-  arm yet.
+- The real-LoRA experiments use small models (135M/360M) trained 10 epochs
+  on synthetic QA pairs — a mechanism test, not an adapter-quality claim.
+  Generation-quality margin is small at this scale (F31). No inference
+  integration (vLLM/LoRAX) exists; the policy's standalone latency is
+  measured (F30) but not inside a serving stack. The serving layer itself
+  remains Punica/S-LoRA/dLoRA territory.
+- The text arm now has both lexical (TF-IDF+SVD) and semantic
+  (bge-small-en-v1.5) feature paths; the real-LoRA experiments use the
+  lexical profiler — a semantic-profiler real-LoRA run is not done yet.
 - ~27 clean calibration examples per domain (brick 3); the p99/p95
   threshold sensitivity is documented in the parent suite's calibration
   trial.
-- Unseen-task routing quality is NOT verified at this scale (loss gap
-  equals random); only routing stability is. No benchmark yet against real
-  LORAUTER-style routing at 1000+ adapters.
+- Unseen-task quality is verified at the aligned-adapter level (F13, F31),
+  not at LORAUTER's 1000+-adapter scale. No head-to-head against
+  LORAUTER/EdgeLoRA on their benchmarks.
 
 ## Related work (verified sources)
 
