@@ -1,7 +1,8 @@
 # LOROUTER — Profile Routing as an Adapter-Selection Capability
 
-Status: research document for the `lorouter` branch. Evidence tiers follow
-the parent suite's convention: **proven** (verified by runnable script,
+Status: research document for the `lorouter` branch. For the complete
+file map (where every file is and what it is), see README.md →
+"Repository layout". Evidence tiers follow the parent suite's convention: **proven** (verified by runnable script,
 reproducible), **bounded/conditional** (proven under stated conditions with
 known limits), **designed** (specified, not yet tested), **open**
 (hypothesis, not yet validated). Every number below is produced by a script

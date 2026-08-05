@@ -2,9 +2,10 @@
 
 Every major finding from the lorouter line of work (branch `lorouter`,
 canonical run 2026-08-05). Each finding names its source script; the
-scripts are the source of truth. Evidence tiers: **proven** (reproducible
-by script), **bounded** (proven under stated conditions), **open**
-(hypothesis, not yet validated).
+scripts are the source of truth. For the complete file map (where every
+file is and what it is), see README.md → "Repository layout". Evidence
+tiers: **proven** (reproducible by script), **bounded** (proven under
+stated conditions), **open** (hypothesis, not yet validated).
 
 ---
 
