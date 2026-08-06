@@ -141,23 +141,20 @@ items are bounded and specific: a REAL 1000+-adapter pool (the scaling
 test is stand-in, grounded in real profile shapes), the serving-stack
 hook itself, and generation quality on a stronger base model.
 
-## 5. What the review says to do next (priority order)
+## 5. What the review says to do next (priority order, status 2026-08-06)
 
-1. **Close the unseen-task gap** — the aligned-adapter control (F13)
-   already shows the direction; a real unseen-task benchmark with aligned
-   adapters present is the missing piece to make the LORAUTER comparison
-   honest rather than aspirational.
-2. **Head-to-head vs LORAUTER-style routing on the same corpus** — the
-   exemplar-arm (F12) is a start; a fair comparison needs the same
-   evaluation protocol, not two separate ones.
-3. **Semantic embeddings for the text arm** — removes the documented
-   lexical ceiling and the F12 artifact in one move.
-4. **A serving-layer integration spike (vLLM/LoRAX hook)** — turns
-   "selection policy" from design (§4.2 of possibility.md) into a
-   measured latency number, which is the production-advantage evidence
-   the zero-parameter claim needs.
-5. **Keep the evidence discipline.** Every finding stays script-backed;
-   the open items stay open until they are not.
+1. ~~Close the unseen-task gap~~ — DONE at the aligned-adapter level
+   (F13/F31); a real 1000+-adapter pool with aligned adapters remains.
+2. ~~Head-to-head vs LORAUTER-style routing on the same corpus~~ — DONE
+   as the exemplar arms (F12/F29, semantic and lexical); a full LORAUTER
+   evaluation protocol on their benchmarks remains.
+3. ~~Semantic embeddings for the text arm~~ — DONE (F28/F29).
+4. ~~Serving-layer integration spike (latency)~~ — policy latency DONE
+   (F30); the vLLM/LoRAX hook itself remains.
+5. ~~Pool-scaling test~~ — DONE to 1024 stand-in adapters (F32–F36).
+6. Keep the evidence discipline. Every finding stays script-backed; the
+   open items (real 1000+ pool, serving hook, stronger-model generation
+   quality, human-reviewed/Swahili corpus) stay open until they are not.
 
 ---
 

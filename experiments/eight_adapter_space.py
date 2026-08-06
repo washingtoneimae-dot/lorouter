@@ -8,7 +8,7 @@ disjoint data with different answer variants. Questions:
   2. Does routing accuracy hold at domain level? At variant level?
   3. Does swap isolation hold with 8 adapters in the pool?
 
-Real LoRA (SmolLM2-135M-Instruct), brick 3 QA pairs.
+Real LoRA (SmolLM2-135M-Instruct), loader-default corpus QA pairs (brick 2).
 
 Run: python3 experiments/eight_adapter_space.py
 """

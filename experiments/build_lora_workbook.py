@@ -85,13 +85,13 @@ summary_rows = [
     ["Stand-in benchmark (brick 2, 5 seeds, 56 test/seed)", "profile 96.4% | centroid 97.9% | learned 96.4% | random 19.3%", "experiments/benchmark.py", "pattern exact; digits stable across 5 seeds"],
     ["Swap isolation (text setting, stand-in)", "0 flips on other domains (weak-replacement swap)", "experiments/benchmark.py", "exact"],
     ["Real-LoRA integration (SmolLM2-135M, rank 8, 10 ep)", "routing 96.4% (54/56); differentiation 2/4 diagonal; finance/law adapters favor code (base priors)", "experiments/real_lora_integration.py", "routing pattern exact across runs; loss digits vary run-to-run (GPU nondeterminism)"],
-    ["Unseen-task (education held out, 14 queries)", "routing stable: education->finance 10/14 (real + stand-in arms agree); oracle agreement 42.9%; loss gap == random (quality OPEN)", "experiments/unseen_task_generalization.py", "distribution exact; quality numbers pattern-level"],
+    ["Unseen-task (education held out, 14 queries)", "routing stable: education->finance 10/14 (real + stand-in arms agree); quality verified at the aligned-adapter level (F13/F31); without aligned adapter the loss gap == random", "experiments/unseen_task_generalization.py", "distribution exact; quality numbers pattern-level"],
     ["LORAUTER-style exemplar signal (answer-NLL oracle)", "V1 42.9% / +0.13% | V2a 28.6% / +0.12% (all->code, lexical artifact) | V2b 35.7% / +0.12% | V3 aligned 14/14 routed, +0.04% | ceiling 100%", "experiments/lora_exemplar_routing.py", "pattern exact; loss digits vary"],
     ["8-adapter pool (2/domain, disjoint data)", "domain accuracy 96.4% (unchanged); profile min cosine 0.996 (near-duplicate adapters); swap flips 0/56", "experiments/eight_adapter_space.py", "pattern exact"],
     ["Corpus brick 3 (664 ex, 25% calib split)", "p99 clean-only threshold 0.30->0.84, false-capture 4.76%->0.00% vs brick 2 (degeneracy resolved)", "scripts/build_moat_corpus.py + scripts/moat_calibration_trial.py", "exact (seeded, deterministic)"],
     ["Profile-metric design (F9)", "question-only loss profiles -> 73.2% routing (code 0%); answer-conditional -> 96.4%", "experiments/real_lora_integration.py", "pattern exact"],
 ]
-ws = sheet("Summary", "LOROUTER -- canonical results", "Canonical run 2026-08-05, lorouter branch. Scripts are the source of truth.",
+ws = sheet("Summary", "LOROUTER -- canonical results", "Canonical runs 2026-08-05/06, lorouter branch. Scripts are the source of truth.",
            ["Experiment", "Key result", "Source script", "Reproducibility"], summary_rows)
 ws.column_dimensions["A"].width = 50
 ws.column_dimensions["B"].width = 92

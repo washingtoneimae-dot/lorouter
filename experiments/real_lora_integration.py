@@ -3,11 +3,11 @@ real_lora_integration.py
 
 Real-LoRA integration test for lorouter: train four domain-specialized
 LoRA adapters on a small open model (SmolLM2-135M-Instruct) using QA pairs
-built from the moat corpus (brick 3), profile each adapter by calibration
-loss, and route real test queries with the profile router.
+built from the loader's default corpus (brick 2), profile each adapter by
+calibration loss, and route real test queries with the profile router.
 
 Pipeline:
-  1. Build QA pairs from corpus/moat_brick3.jsonl train split
+  1. Build QA pairs from the loader's default corpus (brick 2) train split
      (prompt = corpus question, answer = domain-templated response)
   2. Train one LoRA adapter per domain (rank 8, q_proj/v_proj)
   3. Profile each adapter: competence vector = inverse calibration loss

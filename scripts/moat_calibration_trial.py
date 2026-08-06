@@ -1,7 +1,7 @@
 """
 moat_calibration_trial.py
 
-Runs the moat corpus brick 2 (corpus/moat_brick2.jsonl) through the
+Runs the moat corpus brick 3 (corpus/moat_brick3.jsonl) through the
 TECHNICAL.md section 8 pipeline -- the same two-part protocol that
 text_validation.py applies to its synthetic vocabulary:
 

@@ -1,7 +1,7 @@
 # FINDINGS — lorouter, complete record
 
 Every major finding from the lorouter line of work (branch `lorouter`,
-canonical run 2026-08-05). Each finding names its source script; the
+canonical runs 2026-08-05/06). Each finding names its source script; the
 scripts are the source of truth. For the complete file map (where every
 file is and what it is), see README.md → "Repository layout". Evidence
 tiers: **proven** (reproducible by script), **bounded** (proven under
@@ -164,6 +164,8 @@ stated conditions), **open** (hypothesis, not yet validated).
     domain-plausible continuation. Margin is small at 135M scale —
     direction verified, magnitude bounded by base-model quality.
     *(bounded, `experiments/generation_quality.py`)*
+    NOTE: the real-LoRA experiments run on the loader's default corpus
+    (brick 2); brick 3 powers the corpus and calibration-trial line.
 
 ## H. Adapter-pool scaling (2026-08-06, canonical run)
 

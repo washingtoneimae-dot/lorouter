@@ -30,9 +30,10 @@ Research prototype. Three layers of verification, all honest about scope
    learned router (96.4% vs 96.4%) with zero learned router parameters;
    swap isolation holds in the text setting (F1–F4).
 2. Real-LoRA integration (SmolLM2-135M/360M, rank 8, 10 epochs, QA pairs
-   from brick 3): end-to-end mechanism verified — routing 96.4% on both
-   model sizes and across 3 seeds (F5, F26, F27); adapter differentiation
-   partial (2/4 diagonal, base-model code priors).
+   from brick 2 — the loader's default corpus): end-to-end mechanism
+   verified — routing 96.4% on both model sizes and across 3 seeds
+   (F5, F26, F27); adapter differentiation partial (2/4 diagonal,
+   base-model code priors).
 3. Unseen-task (education held out): routing stable and interpretable
    (education → finance; F10); quality verified at the aligned-adapter
    level — routing 14/14 and generation output best (F13, F31);
@@ -111,14 +112,25 @@ theory → TECHNICAL.md (inherited from v2).
                            random, 5 seeds, per-domain, swap isolation
       real_lora_integration.py  SmolLM2-135M LoRA adapters (r8, 10 ep),
                            answer-conditional profiles, routing (96.4%)
+      real_lora_multiseed.py    routing stability across seeds 42/7/2026
+                           (96.4% each, F26)
+      real_lora_360m.py        model-size check: SmolLM2-360M, 96.4% (F27)
       unseen_task_generalization.py  education held out; stability,
-                           oracle agreement, loss gap (quality open)
+                           oracle agreement, loss gap (aligned-level
+                           quality in F13/F31)
       lora_exemplar_routing.py  LORAUTER-style exemplar embeddings + the
                            aligned-adapter control (14/14)
       eight_adapter_space.py  8-adapter pool: scaling, profile separation,
                            swap isolation
+      semantic_embeddings.py   bge-small arm: 98.2%, beats centroid (F28);
+                           F12 artifact gone (F29)
+      latency_spike.py     selection-policy latency 4 -> 10k adapters (F30)
+      generation_quality.py    aligned-adapter generation scoring (F31)
+      adapter_pool_scaling.py  pool scaling to 1024 (F32-F36); table in
+                           experiments/results/pool_scaling.csv
       build_lora_workbook.py  regenerates lorouter_results.xlsx
-      lorouter_results.xlsx   canonical tables + charts (6 sheets)
+      lorouter_results.xlsx   canonical tables + charts (15 sheets)
+      results/             raw CSV outputs (pool_scaling.csv)
 
     scripts/               parent-suite + moat scripts (inherited from v2
                            plus this line's additions)

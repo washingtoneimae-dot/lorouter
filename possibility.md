@@ -93,12 +93,17 @@ metrics (F23).
 | Swap isolation, text setting | 0 flips on other domains | F4 |
 | Real-LoRA (SmolLM2-135M, r8, 10ep) | 96.4% (54/56), robust across profile metrics | F5, F6, F9 |
 | Adapter differentiation | 2/4 diagonal; base-model code priors bound it | F7, F8 |
-| Unseen task (education held out) | stable routing (10/14 → finance), quality open | F10, F11 |
-| Exemplar task embeddings | mislead (all → code, lexical artifact) | F12 |
+| Unseen task (education held out) | stable routing (10/14 → finance), aligned-level quality | F10, F13, F31 |
+| Exemplar task embeddings | mislead with lexical features (F12); sensible with semantic (F29) | F12, F29 |
 | Aligned-adapter control | routing 14/14 — ceiling is coverage | F13, F14 |
 | 8-adapter pool | 96.4% domain-level; separation bounded by diversity | F15, F16, F17 |
 | Swap isolation, 8 adapters | 0/56 flips | F18 |
 | Corpus brick 3 + calibration | 664 ex, p99 degeneracy resolved, §8 property at p95 | F19–F23 |
+| Multi-seed + model size | 96.4% × seeds 42/7/2026; 96.4% on 360M | F26, F27 |
+| Semantic embeddings arm | profile 98.2%, beats centroid (ranking flip) | F28 |
+| Selection latency | profiling 1.14 ms; cosine 17 µs → 380 µs (4 → 10k) | F30 |
+| Generation quality (aligned) | routed adapter best: 0.5932 vs 0.5887 | F31 |
+| Pool scaling to 1024 | flat 96.74% at zero noise; U-shaped under noise; compounding law does NOT transfer | F32–F36 |
 
 ## 4. Products (ordered by how much of the claim is proven)
 
@@ -156,15 +161,18 @@ Use case §2.3 productized; smallest surface, cleanest privacy story.
 - Corpus is synthetic-template English; no human review pass, no
   Swahili/sheng coverage.
 
-## 7. Roadmap (designed/open)
+## 7. Roadmap (status as of 2026-08-06)
 
-1. Semantic embeddings for the text arm (replaces the lexical ceiling).
-2. A real unseen task WITH aligned adapters — the LORAUTER-style claim
-   (task-level routing, 1000+ adapters) tested head-to-head.
-3. vLLM/LoRAX integration hook + latency measurement.
-4. Generation-quality evaluation of routed adapters (does the selected
-   adapter produce better answers, not just lower loss).
-5. Human-reviewed corpus brick; Swahili/sheng coverage.
+1. ~~Semantic embeddings for the text arm~~ — DONE (F28/F29): profile
+   routing 98.2%, beats centroid; the F12 lexical artifact gone.
+2. ~~Unseen task WITH aligned adapters (aligned case)~~ — DONE at the
+   aligned level (F13/F31: routing 14/14, best generation output); the
+   1000+-adapter REAL pool remains open (stand-in scaling is F32–F36).
+3. ~~Latency measurement~~ — DONE (F30: sub-ms policy at 10k adapters);
+   the vLLM/LoRAX integration hook itself remains open.
+4. ~~Generation-quality evaluation~~ — DONE at 135M (F31); a stronger
+   base model is the remaining magnitude question.
+5. Human-reviewed corpus brick; Swahili/sheng coverage — open.
 
 ---
 

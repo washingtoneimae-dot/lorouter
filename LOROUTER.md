@@ -78,8 +78,8 @@ possibility.md), and calibration discipline is the binding constraint (§8).
 ### 3.2 Real-LoRA integration (proven as mechanism, bounded as quality)
 
 `experiments/real_lora_integration.py` — SmolLM2-135M-Instruct, rank-8
-LoRA adapters, 10 epochs on QA pairs built from brick 3, profiled by
-answer-conditional calibration loss:
+LoRA adapters, 10 epochs on QA pairs built from brick 2 (the loader's
+default corpus), profiled by answer-conditional calibration loss:
 
 - **Routing accuracy: 96.4% (54/56)** — identical to the stand-in
   benchmark, and robust across two profile metrics (question-only loss and
@@ -94,7 +94,8 @@ answer-conditional calibration loss:
 - Mechanism verdict: the full chain (real LoRA → real losses → profiles →
   cosine selection) works end-to-end.
 
-### 3.3 Unseen-task generalization (proven stable, quality OPEN)
+### 3.3 Unseen-task generalization (proven stable; quality verified at
+the aligned-adapter level, F13/F31)
 
 `experiments/unseen_task_generalization.py` — education fully held out
 (no education adapter, profiler never saw education):
@@ -104,23 +105,28 @@ answer-conditional calibration loss:
   the stand-in arms (two independent implementations agreeing). HELB/
   bursary/fee queries are lexically finance-adjacent; the router's choice
   is defensible.
-- **Quality is NOT verified**: oracle agreement 42.9% (random would be
-  ~33%); the router's loss gap equals random expectation. At this scale,
-  with no aligned adapter for the unseen domain, routing picks sensibly
-  but does not beat chance on actual adapter competence.
-- Interpretation: the failure is *no aligned adapter exists*, not *routing
-  is broken*. This is exactly the case the moat strategy pre-empts
-  (possibility.md §3): a moat-covered domain always has an aligned
-  adapter, so unseen-task routing becomes seen-task routing. The control
-  experiment for this claim is in §3.4.
+- **Without an aligned adapter, per-query quality sits at the noise
+  floor**: oracle agreement 42.9%, loss gap == random expectation — the
+  earlier open result, now superseded in scope by the aligned case below.
+- **With an aligned adapter present** (the moat-covered case, F13/F31):
+  routing is 14/14 and the routed adapter produces the best generation
+  output (0.5932 vs 0.5887 semantic similarity to reference, +0.45pp).
+  The unseen-task failure mode is *missing coverage*, not broken routing —
+  exactly the case the moat strategy pre-empts (possibility.md §3).
 
 ### 3.4 Adapter-space scaling and the aligned-adapter control (bounded)
 
-The two follow-up experiments this document was written to contain:
+The follow-up experiments this document was written to contain, all now
+run:
 
 - **Richer space (8 adapters)**: two adapters per domain, trained on
   disjoint data with different answer variants. Tests whether profiles
   stay separable and routing accuracy holds as the adapter pool grows.
+- **Pool scaling to 1024 adapters** (`experiments/adapter_pool_scaling.py`,
+  F32–F36): zero-noise accuracy flat at 96.74% from 8 to 1024 adapters;
+  U-shaped under profile noise; Bonferroni-style compounding does NOT
+  transfer to adapter pools (correlated variants); swap isolation 0.00%
+  at N=128/512.
 - **LORAUTER-style exemplar signal**: task embeddings derived from a
   small validation set of the unseen task, per LORAUTER (arXiv:2601.21795),
   plus the aligned-adapter control: the same unseen queries routed with an
@@ -155,14 +161,18 @@ adapter selection cheap, auditable, and swap-safe.
 
 ## 5. Honest limits (consolidated)
 
-- Real-LoRA experiments use a 135M model, synthetic QA pairs, 10 epochs,
-  rank 8 — a mechanism test, not an adapter-quality claim. No generation
-  quality evaluation, no latency/memory measurement, no vLLM/LoRAX
-  integration.
-- Features are lexical (TF-IDF + SVD); no semantic embeddings in the text
-  arm.
-- Unseen-task quality is open at this scale (loss gap == random); only
-  routing stability is verified.
+- Real-LoRA experiments use small models (135M/360M), synthetic QA pairs,
+  10 epochs, rank 8 — a mechanism test, not an adapter-quality claim.
+  Generation-quality margin is small at this scale (F31). No inference
+  integration (vLLM/LoRAX) exists; the selection policy's standalone
+  latency is measured (F30) but not inside a serving stack.
+- The text arm has both lexical (TF-IDF+SVD) and semantic
+  (bge-small-en-v1.5) feature paths; the real-LoRA experiments use the
+  lexical profiler — a semantic-profiler real-LoRA run is not done yet.
+- Unseen-task quality is verified at the aligned-adapter level (F13,
+  F31); the no-aligned-adapter case remains at the noise floor, and
+  1000+-adapter scale was tested with stand-in variants grounded in real
+  profile shapes (F32–F36), not with a real pool of that size.
 - Adapter differentiation is bounded by base-model priors (§3.2).
 - The corpus is synthetic-template English; no human review pass, no
   Swahili/sheng coverage.
