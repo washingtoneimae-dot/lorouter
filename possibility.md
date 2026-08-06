@@ -98,7 +98,7 @@ metrics (F23).
 | Aligned-adapter control | routing 14/14 — ceiling is coverage | F13, F14 |
 | 8-adapter pool | 96.4% domain-level; separation bounded by diversity | F15, F16, F17 |
 | Swap isolation, 8 adapters | 0/56 flips | F18 |
-| Corpus brick 3 + calibration | 664 ex, p99 degeneracy resolved, §8 property at p95 | F19–F23 |
+| Corpus brick 3 v3 + calibration | 3,010 ex (6 domains + 220 boundaries); §8 property replicates (p99 fc 1.79% → 0.00%) | F37–F41 |
 | Multi-seed + model size | 96.4% × seeds 42/7/2026; 96.4% on 360M | F26, F27 |
 | Semantic embeddings arm | profile 98.2%, beats centroid (ranking flip) | F28 |
 | Selection latency | profiling 1.14 ms; cosine 17 µs → 380 µs (4 → 10k) | F30 |

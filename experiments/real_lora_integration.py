@@ -70,6 +70,16 @@ ANSWERS = {
         "This concerns schooling and admissions: confirm the entry requirements, the funding options and the application window.",
         "Education guidance: verify the course requirements, the fee structure and the registration steps at the institution.",
     ],
+    "medicine": [
+        "For this medical question, consider the symptoms, the appropriate referral or clinic, and the Kenya-specific health guidance before acting.",
+        "This is a health matter: check the symptoms against known conditions, note when emergency care is needed, and advise a proper consultation.",
+        "Medical guidance: review the presentation, flag warning signs, and direct the person to the right level of care.",
+    ],
+    "psychology": [
+        "For this psychology question, consider the emotional or behavioural pattern, the coping options and when professional support is needed.",
+        "This concerns mental health: acknowledge the experience, suggest practical coping steps, and encourage professional help when indicated.",
+        "Psychological guidance: reflect the concern back, outline healthy responses, and name the support resources available.",
+    ],
 }
 
 

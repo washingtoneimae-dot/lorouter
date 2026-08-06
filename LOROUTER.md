@@ -153,8 +153,9 @@ Results of both: see `experiments/lora_exemplar_routing.py` and
 Possibility.md §3 proved (synthetic) that a broad calibration foundation
 converts additions into swaps. Lorouter makes that operational for
 adapter pools: **a new adapter enters the router by calibration, not by
-training the router.** The moat corpus (bricks 1–3, 664 examples,
-boundary-dense) is the calibration foundation; adapter profiles are minted
+training the router.** The moat corpus (bricks 1–3; brick 3 is now v3 —
+3,010 examples, six domains, 220 boundaries, F37–F41) is the calibration
+foundation; adapter profiles are minted
 from it. The corpus growth experiment (brick 3, 25% calibration split)
 resolved the p99 threshold degeneracy documented in the parent suite's
 calibration trial — the calibration foundation is now large enough for

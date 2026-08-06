@@ -88,7 +88,7 @@ summary_rows = [
     ["Unseen-task (education held out, 14 queries)", "routing stable: education->finance 10/14 (real + stand-in arms agree); quality verified at the aligned-adapter level (F13/F31); without aligned adapter the loss gap == random", "experiments/unseen_task_generalization.py", "distribution exact; quality numbers pattern-level"],
     ["LORAUTER-style exemplar signal (answer-NLL oracle)", "V1 42.9% / +0.13% | V2a 28.6% / +0.12% (all->code, lexical artifact) | V2b 35.7% / +0.12% | V3 aligned 14/14 routed, +0.04% | ceiling 100%", "experiments/lora_exemplar_routing.py", "pattern exact; loss digits vary"],
     ["8-adapter pool (2/domain, disjoint data)", "domain accuracy 96.4% (unchanged); profile min cosine 0.996 (near-duplicate adapters); swap flips 0/56", "experiments/eight_adapter_space.py", "pattern exact"],
-    ["Corpus brick 3 (664 ex, 25% calib split)", "p99 clean-only threshold 0.30->0.84, false-capture 4.76%->0.00% vs brick 2 (degeneracy resolved)", "scripts/build_moat_corpus.py + scripts/moat_calibration_trial.py", "exact (seeded, deterministic)"],
+    ["Corpus brick 3 v3 (user-built)", "3,010 ex / 6 domains / 220 boundaries; boundary hardness 94.0% clean vs 0.0% boundary; p99 clean-only threshold 0.0448 -> 0.7638, false-capture 1.79% -> 0.00%", "corpus/moat_brick3.jsonl + scripts/moat_calibration_trial.py", "exact (seeded/deterministic parts); v3 file fixed"],
     ["Profile-metric design (F9)", "question-only loss profiles -> 73.2% routing (code 0%); answer-conditional -> 96.4%", "experiments/real_lora_integration.py", "pattern exact"],
 ]
 ws = sheet("Summary", "LOROUTER -- canonical results", "Canonical runs 2026-08-05/06, lorouter branch. Scripts are the source of truth.",
@@ -170,22 +170,22 @@ bar(ws, "Oracle agreement by routing arm",
 # ----------------------------------------------------------------------
 ws = sheet("CalibrationTrial", "Gate calibration -- brick 2 vs brick 3",
            "scripts/moat_calibration_trial.py, gate for education, TF-IDF+SVD+MLP. The s8 property: boundary-inclusive calibration raises the threshold and kills false-capture.",
-           ["metric", "brick 2 (n_cal 42)", "brick 3 (n_cal ~110)", "s8 canonical"],
+           ["metric", "brick 2 (n_cal 42)", "v3 brick 3 (n_cal ~135/domain)", "s8 canonical"],
            [
-               ["p99 clean-only threshold", 0.3048, 0.8439, 0.0031],
-               ["p99 clean+boundary threshold", 0.9920, 0.9393, 0.9943],
-               ["p99 false-capture clean-only", 0.0476, 0.0000, 0.0160],
+               ["p99 clean-only threshold", 0.3048, 0.0448, 0.0031],
+               ["p99 clean+boundary threshold", 0.9920, 0.7638, 0.9943],
+               ["p99 false-capture clean-only", 0.0476, 0.0179, 0.0160],
                ["p99 false-capture clean+boundary", 0.0000, 0.0000, 0.0000],
-               ["p99 recall clean-only", 1.000, 0.957, 1.000],
-               ["p99 recall clean+boundary", 0.714, 0.826, 0.920],
-               ["p95 clean-only threshold", 0.1361, 0.1283, None],
-               ["p95 clean+boundary threshold", 0.9353, 0.6029, None],
-               ["p95 false-capture clean-only", 0.0476, 0.0290, None],
-               ["p95 false-capture clean+boundary", 0.0000, 0.0000, None],
-               ["p95 recall clean-only", 1.000, 1.000, None],
-               ["p95 recall clean+boundary", 0.929, 1.000, None],
-               ["addition flips (joint retrain, part 1)", 2, 0, "see s6"],
-               ["education-boundary escalation (p99)", "1 of 7", "1 of 17", None],
+               ["p99 recall clean-only", 1.000, 0.973, 1.000],
+               ["p99 recall clean+boundary", 0.714, 0.933, 0.920],
+               ["p95 clean-only threshold", 0.1361, 0.0032, None],
+               ["p95 clean+boundary threshold", 0.9353, 0.0594, None],
+               ["p95 false-capture clean-only", 0.0476, 0.0402, None],
+               ["p95 false-capture clean+boundary", 0.0000, 0.0134, None],
+               ["p95 recall clean-only", 1.000, 0.987, None],
+               ["p95 recall clean+boundary", 0.929, 0.973, None],
+               ["addition flips (joint retrain, part 1)", 2, 7, "see s6"],
+               ["education-boundary escalation (p99)", "1 of 7", "6 of 34", None],
            ])
 for r in range(5, 19):
     for c in (2, 3, 4):
@@ -378,10 +378,13 @@ ws = sheet("Corpus", "Moat corpus growth + calibration stability",
            [
                ["brick 1", 181, 17, "70/15/15 (n~32)", None, None, None, None],
                ["brick 2", 408, 48, "70/15/15 (n=80)", 0.3048, 0.0476, 0.1361, 0.9353],
-               ["brick 3", 664, 64, "60/25/15 (n=180)", 0.8439, 0.0000, 0.1283, 0.6029],
+               ["brick 3 (pre-v3)", 664, 64, "60/25/15 (n=180)", 0.8439, 0.0000, 0.1283, 0.6029],
+               ["brick 3 v3 (user-built)", 3010, 220, "1673/807/530 (n~135/domain)", 0.0448, 0.0179, 0.0032, 0.0594],
            ])
-ws["A9"] = "brick 2 -> 3: small-n p99 degeneracy resolved (threshold 0.30->0.84, false-capture 4.76%->0.00%); boundary value now visible at p95."
+ws["A9"] = "brick 2 -> pre-v3: small-n p99 degeneracy resolved. v3 (user-built, 6 domains + medicine/psychology): the six-domain space is harder -- p99 false-capture 1.79% -> 0.00% with boundaries; p95 effect real but weaker (4.02% -> 1.34%). Addition flips at v3: 7."
 ws["A9"].font = SUB_FONT
+ws["A10"] = "v3 integrity: 3,010 unique ids/texts, zero calib/test leakage into train; boundary hardness 94.0% clean vs 0.0% boundary (F37-F41)."
+ws["A10"].font = SUB_FONT
 lc = LineChart()
 lc.title = "Corpus growth across bricks"
 lc.style = 12

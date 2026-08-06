@@ -169,6 +169,10 @@ stated conditions), **open** (hypothesis, not yet validated).
 
 ## H. Adapter-pool scaling (2026-08-06, canonical run)
 
+Note: this run used the pre-v3 brick 3 (664 examples, 4 domains); the
+file has since been superseded by the user's v3 (F37–F41). A scaling
+re-run on v3 is a listed follow-up.
+
 Grounded in the measured real-LoRA profile shapes (F5 loss matrix),
 variant profiles = base + Gaussian noise at scale σ; 5 seeds; 92 brick-3
 test queries. Full table in `experiments/results/pool_scaling.csv`.
@@ -194,6 +198,36 @@ test queries. Full table in `experiments/results/pool_scaling.csv`.
     N=1024/σ=0.10; −0.997 at σ=0.20) while mean cosine stays 0.63–0.89 —
     the domain base profile dominates the mean; extreme-value noise
     lives in the min. *(proven)*
+
+## I. v3 corpus (user-built, 2026-08-06, canonical run)
+
+The corpus was grown by the user from 664 to **3,010 examples**
+(`corpus/moat_brick3.jsonl`, version tag `v3-moat-brick-3-6domain-psychology`):
+six clean domains (finance/law/code/education 500 each, medicine 384,
+psychology 415, code 491 — the sub-500 counts are template-space
+exhaustion, not curation) + **220 hand-written boundaries** across 36
+cross-domain pairings (including 4- and 6-way examples). Splits
+1673/807/530.
+
+37. **Integrity at scale**: 3,010 unique ids and texts, zero
+    calibration/test leakage into train, no empty rows, schema-compliant.
+    *(proven, verified against the file)*
+38. **Boundary hardness holds at 4.5x scale with 6 domains**: TF-IDF
+    classifier 94.0% on clean test (420 examples), 0.0% on boundary test
+    (110 examples). *(proven)*
+39. **Calibration on v3 (p99)**: clean-only threshold 0.0448 →
+    clean+boundary 0.7638; false-capture 1.79% → 0.00%; recall 97.3% →
+    93.3% — the §8 property replicates. At p95 the effect is real but
+    weaker (false-capture 4.02% → 1.34%) — the six-domain space is
+    harder than the four-domain one. *(proven,
+    `scripts/moat_calibration_trial.py`)*
+40. **Escalation sensitivity improves with boundary richness**: 6 of 34
+    education-involving boundaries (18%) are now flagged by the gate
+    (was 1/17 = 6% at the old size) — the gate flags more genuine
+    ambiguity as calibration data improves. *(proven)*
+41. **Addition flips at v3 size: 7** (was 0 at 664 examples) — the
+    six-domain space presses harder on the profiler; small, real, and
+    the §6.3 gated fix is exactly its remedy. *(proven)*
 
 ---
 

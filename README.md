@@ -50,7 +50,7 @@ Research prototype. Three layers of verification, all honest about scope
    NOT transfer to adapter pools (correlated variants); swap isolation
    0.00% at N=128/512.
 
-Full record: FINDINGS.md (36 numbered findings), REVIEW.md (significance
+Full record: FINDINGS.md (41 numbered findings), REVIEW.md (significance
 against 2026 trends + gap-closure status), experiments/lorouter_results.xlsx
 (15 sheets, 12 charts, built by experiments/build_lora_workbook.py).
 
@@ -154,9 +154,13 @@ theory → TECHNICAL.md (inherited from v2).
                            vs clean+boundary gate calibration, p99/p95
 
     corpus/                the moat calibration foundation
-      moat_brick3.jsonl/.csv   current brick: 664 examples, 4 domains,
-                           Kenyan context, 64 boundary examples
-                           (bricks 1-2 in git history)
+      moat_brick3.jsonl/.csv   current corpus: v3 — 3,010 examples,
+                           6 domains (finance/law/code/education/medicine/
+                           psychology), 220 boundary examples, Kenyan
+                           context, splits 1673/807/530 (user-built
+                           2026-08-06; bricks 1-2 + pre-v3 brick 3 in git
+                           history)
+      moat_brick3_crossdomain.csv  flat export of the same corpus
 
     assets/                media
       profile-moe-demo.mp4 parent suite's 3-minute demo video (inherited)
@@ -174,9 +178,9 @@ theory → TECHNICAL.md (inherited from v2).
 - The text arm now has both lexical (TF-IDF+SVD) and semantic
   (bge-small-en-v1.5) feature paths; the real-LoRA experiments use the
   lexical profiler — a semantic-profiler real-LoRA run is not done yet.
-- ~27 clean calibration examples per domain (brick 3); the p99/p95
-  threshold sensitivity is documented in the parent suite's calibration
-  trial.
+- ~135 clean calibration examples per domain (v3 brick 3: 807 calibration
+  examples across 6 domains); the p99/p95 threshold sensitivity is
+  documented in the parent suite's calibration trial.
 - Unseen-task quality is verified at the aligned-adapter level (F13, F31),
   not at LORAUTER's 1000+-adapter scale. No head-to-head against
   LORAUTER/EdgeLoRA on their benchmarks.
