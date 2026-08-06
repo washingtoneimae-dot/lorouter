@@ -53,6 +53,14 @@ isolation is structural (a profile insertion cannot change other adapters'
 scores), additions are swaps when the moat covers the domain (§3.2 of
 possibility.md), and calibration discipline is the binding constraint (§8).
 
+**Load-bearing design constraint (F9)**: the profile must measure the
+adapter's *answer behavior*, not its fit to the question text. The first
+real-LoRA implementation profiled against question-only NLL and produced
+near-uniform profiles — routing collapsed to 73.2% with the code domain at
+0%. Switching to (question + domain answer) calibration restored 96.4%.
+This constraint is not a tuning detail: profiles that measure question
+text measure the base model, not the adapter.
+
 ---
 
 ## 3. Evidence

@@ -44,7 +44,7 @@ This tiering, and the batched multi-adapter serving problem it implies, is **not
 | Swapping an expert's function (same slot) | Not naturally isolated — the gate's boundary for that slot was co-optimized with the old expert's actual behavior | **Provably isolated** (§5) — untouched experts show 0.00% collateral change in every test run |
 | Interpretability of a routing decision | Opaque — a decision is "whatever the trained gate's forward pass produced," not decomposable into a reason | Every decision traces to a specific calibration score: "expert X was chosen because it scored Y on domain benchmark Z" |
 | Parameter growth | Gate parameters scale with expert count × hidden dimension | Profiler size is independent of expert count — same classifier regardless of how many experts exist |
-| Genuinely novel/subtle routing signal at large scale | **Advantage: traditional MoE** — a jointly-trained gate can, given enough data, discover routing signal humans wouldn't think to calibrate for | **Disadvantage here** — routing quality is bounded by what the calibration benchmark actually measures; this is an honest, unresolved trade-off, not a settled win (§11, limitation 5) |
+| Genuinely novel/subtle routing signal at large scale | **Advantage: traditional MoE** — a jointly-trained gate can, given enough data, discover routing signal humans wouldn't think to calibrate for | **Disadvantage here** — routing quality is bounded by what the calibration benchmark actually measures; this is an honest, unresolved trade-off, not a settled win (§11, limitation 5; adapter-selection re-runs with properly trained baselines: FINDINGS F1/F28 — parity, not superiority) |
 | Isolation guarantee under expert *addition* | None claimed or typically characterized in the literature reviewed | **Bounded/conditional guarantee** (§6.3, Theorem 3) — provably safe below a calibrated threshold, provably unsafe (and provably *unsafeable*) above it for genuinely ambiguous inputs |
 | Multi-adapter batched serving at scale | Solved in prior art (Punica's SGMV kernels, S-LoRA's unified paging) | Not re-solved here; intended to build on the same prior art (§2.2) |
 
@@ -197,6 +197,8 @@ Tested with 3 simultaneous additions (law, medicine, finance). Reproduce: `scrip
 
 **Design rule following directly from this: budget an aggregate false-capture tolerance across the full roadmap of planned additions, not per-addition in isolation, or the compounding will be discovered in production rather than planned for.**
 
+**Scope condition, stated precisely (F34)**: this compounding law assumes *independent* gates — the worst case, and the right model for distinct-domain additions, where each gate is calibrated on its own domain's data. It does **not** transfer to adapter pools of *variants* of the same domain: variants share the domain's base profile, so their errors are correlated, and measured false capture is far below the independence prediction (FINDINGS F34: e.g. 22.6% measured vs 100% naive at 128 correlated variants). Apply the §7 law to domain additions; use F34's correlated-error model for variant proliferation.
+
 ---
 
 ## 8. Validation on Real Text (Partial)
@@ -212,7 +214,7 @@ No network access was available to test with a trained semantic embedding model 
 
 ---
 
-## 9. Proposed: Modular Dimension Composition (not yet validated at scale)
+## 9. Modular Dimension Composition (mechanism validated; scale still open)
 
 Since each new domain's gate is trained fully independently (no joint retraining, by design — §6.3), domains behave as pluggable, standardized units. This suggests a natural extension: maintain a standardized calibration-data bank per domain, and assemble custom profilers on demand by selecting a subset of available dimensions — a "profiler compiled from parts" rather than one trained per deployment.
 
@@ -222,7 +224,9 @@ Since each new domain's gate is trained fully independently (no joint retraining
 
 **What is *not* yet proven, and needs to be stated precisely:** it's tempting to claim "dropping a dimension from a composed profiler is always at least as safe." Checked this directly before writing it down: it only holds if calibration is done as a **per-domain worst-case** (threshold = max over each individual domain's own quantile), not as a **pooled aggregate** over a mixture of domains (which is what every experiment in this document actually used). Under pooled calibration, it's possible for one "easy" domain to pull the aggregate threshold down while a "harder" domain sits above the nominal target FPR — in which case keeping only the harder domain in a subset could exceed the intended bound. Tested this on the current 4-domain data and it happened to hold (individual FPRs ranged 0.60–0.85%, all under the 1% target) — but that's because these domains are roughly balanced in difficulty, not because the calibration protocol guarantees it in general. **Recommendation: if this is built, calibrate per-domain worst-case from the start, not pooled.**
 
-**Practical constraint, stated honestly**: building a genuinely standardized, well-populated dataset bank across many domains — with the boundary-example density §8 shows is required for meaningful calibration — is a substantial undertaking, not a weekend project, especially pre-team and pre-traction. The lower-risk path is validating the composition mechanism on 2–3 domains first (proving the mechanism, not the coverage), rather than attempting comprehensive breadth solo before the architecture-level claim is even confirmed at small scale.
+**Validation status (2026-08, lorouter branch)**: the composition mechanism is no longer merely proposed. Empirically validated: (a) with 8 real LoRA adapters (4 domains × 2 variants, loader-default corpus — FINDINGS F15–F18): domain-level routing holds at 96.4%, swap isolation 0/56 flips; (b) with stand-in variant pools to 1024 adapters on brick 3 (F32–F36): flat 96.74% at zero profile noise, U-shaped under noise, isolation 0.00% at N=128/512. Precisely what remains open: a real pool at 1000+ adapters, and the per-domain worst-case calibration protocol recommended below.
+
+**Practical constraint, stated honestly**: building a genuinely standardized, well-populated dataset bank across many domains — with the boundary-example density §8 shows is required for meaningful calibration — is a substantial undertaking, not a weekend project, especially pre-team and pre-traction. The mechanism-level validation above (8 real adapters, 1024 stand-in) is done; the coverage-side build-out (the bank itself) remains the open, large part.
 
 ---
 
@@ -247,8 +251,8 @@ Since each new domain's gate is trained fully independently (no joint retraining
 2. Multi-addition compounding requires explicit threshold budgeting or the aggregate risk grows silently.
 3. Gating fix validated on synthetic data and (with proper calibration-set construction) partially on lexical text; not yet tested against true semantic embeddings, and not yet tested in a live serving environment (calibration latency, concurrent-request interference — untested outside offline evaluation).
 4. Real production calibration data (for expert profiles, as opposed to gate thresholds) does not yet exist for any real domain in this project — everything validated so far uses synthetic or template-generated stand-ins.
-5. Accuracy comparison against a learned router (DeepSeek/Mixtral-style) used an undertrained baseline (~8s training); not a fair comparison yet, and no claim of superiority should rest on it until rerun at proper scale. Relatedly (§3, row 7): traditional MoE's ability to discover subtle routing signal from data at scale is a genuine, unmatched advantage that this architecture has no answer to yet.
-6. Modular composition (§9) is logically motivated and partially tested at the mechanism level, not validated at any realistic scale or domain count.
+5. Accuracy comparison against a learned router (DeepSeek/Mixtral-style) used an undertrained baseline (~8s training); not a fair comparison yet, and no claim of superiority should rest on it until rerun at proper scale. Relatedly (§3, row 7): traditional MoE's ability to discover subtle routing signal from data at scale is a genuine, unmatched advantage that this architecture has no answer to yet. **Status update (lorouter branch, 2026-08)**: for the adapter-selection layer, this comparison was re-run properly — a converged logistic-regression router (5 seeds, lexical and semantic features, FINDINGS F1/F28) ties profile routing exactly (96.4% / 98.2%); the claim there was and remains *parity at zero learned parameters*, not superiority. The in-MoE gate comparison at real scale remains untested, and the scale-advantage caveat in §3 row 7 stands.
+6. Modular composition (§9) is validated at the mechanism level (8 real adapters, F15–F18; stand-in pools to 1024, F32–F36) but not with a real pool at 1000+ adapters, and not with the per-domain worst-case calibration protocol §9 recommends.
 7. Exact reproducibility is run-dependent for multi-stage experiments (§12) — treat percentages and sample-level detail as illustrative of a real, repeatedly-observed pattern, not as fixed constants. The two-decimal-place-stable results (§6.4, the multi-dimension percentages in §7, the printer-prototype numbers in §8) are the ones safe to cite as fixed.
 8. Margin/confidence analysis (§6.5) has been run and verified on one documented dataset realization, not yet re-verified against the canonical script's own specific stable-core points — a known, stated gap rather than a silently-dropped one.
 9. The two-tier deployment story and multi-adapter batched serving (§2.2) are design intent, not tested engineering, in this document — they rest on citing prior art (Punica, S-LoRA), not original validation here.
@@ -259,7 +263,9 @@ Since each new domain's gate is trained fully independently (no joint retraining
 
 ## 12. Reproducibility
 
-Every numbered finding above has a corresponding runnable script in `scripts/` (`shared_data.py` + eight standalone scripts). Run any of them directly; no external data or network access required.
+Every numbered finding above has a corresponding runnable script in `scripts/` (`shared_data.py` + nine standalone scripts). Run any of them directly; no external data or network access required.
+
+**Canonical environment (verified run, 2026-08):** Python 3.14.4, scikit-learn 1.9.0, numpy 2.5.1, CPU-only (no GPU, no network). The repository's own venv (`~/.venv` next to the repo, or any equivalent environment at these versions) reproduces the claims below; other versions of scikit-learn may shift pattern-level numbers but not the qualitative findings (§12's exact-vs-pattern rule applies). The lorouter branch's real-LoRA experiments (which DO need a network for model downloads and a GPU for training) are documented separately in `LOROUTER.md` and `FINDINGS.md` — this document covers the synthetic suite only.
 
 **Checked directly rather than assumed**: re-running these experiments in clean, standalone scripts (as opposed to the original incremental development session) produces the same *qualitative* findings every time, but not bit-identical numbers. Same nominal random seeds do not guarantee identical output once code structure changes how the random-number stream gets consumed — a common and under-discussed reproducibility gap in ML experimentation generally, not specific to this project.
 
@@ -281,10 +287,11 @@ All in `scripts/`, each independently runnable (`python3 <script>.py`), CPU-only
 | `text_validation.py` | §8 (real-text flip replication + systematic calibration-generation prototype) |
 | `boundary_solutions.py` | §6.6 (adaptive-τ localization) plus **Solution D**, added in this review pass: the gated one-vs-rest fix from §4.3/§6.3, benchmarked head-to-head against the original three mitigations in the same harness. Verified: Solutions A/B/C never change which expert wins top-1 (confirmed again here); Solution D does, correctly fixing 2 of 3 flip cases and leaving the third — the genuinely ambiguous one — largely unresolved, exactly matching §6.3's prediction. This is this repository's canonical version of the file, independent of any other repository. |
 | `moat_profile_addition.py` | Data-moat strategy (see `possibility.md` §2): Arm A — frozen profiler over a 7-domain moat, new expert added via on-the-fly profile calibration → **0 collateral flips, 0.000% MSE change, stable across 5 seeds**; Arm B — the same addition via §6's jointly-retrained profiler → 184/900 flips (147/150 on reasoning). Direct head-to-head evidence that pre-covering the domain space converts additions into swaps. |
-| `moat_calibration_trial.py` | §8 replication on the moat corpus (brick 2): (1) addition-flip test on the real-text corpus — joint retrain with a new domain flips base inputs into it; (2) gate calibration clean-only vs clean+boundary — the §8 property replicates in direction (threshold 0.30 → 0.99, false-capture 4.76% → 0.00%); at the 95th percentile the tradeoff matches §8's canonical numbers (recall 100% → 92.9%). Small-n sensitivity at p99 documented in the script output. |
+| `moat_calibration_trial.py` | §8 replication on the moat corpus (brick 3): (1) addition-flip test on the real-text corpus — 0 flips at brick 3 size (the profiler is stable once the corpus is large enough); (2) gate calibration clean-only vs clean+boundary — at p95 the §8 property replicates cleanly (threshold 0.1283 → 0.6029, false-capture 2.90% → 0.00%, recall 100% both arms); at p99 the brick-3 clean-only threshold is 0.8439 with 0.00% false-capture — the small-n degeneracy seen on brick 2 (0.3048 / 4.76%) is resolved by the larger calibration split. |
+| `build_moat_corpus.py` | Seeded, deterministic generator for the moat corpus bricks (current: `corpus/moat_brick3.jsonl/.csv` — 664 examples: 150 per domain × 4 domains + 64 boundary examples, Kenyan context, 60/25/15 splits, machine-validated: clean 96.7%, boundary 0.0%). Bricks 1–2 remain in git history. |
 | `build_workbook.py` | Generates `performance_data.xlsx` (§14) from this canonical run's figures. Writes to a path relative to its own location, so it runs correctly regardless of the current working directory. |
 
-This package's own nine scripts plus this document are sufficient to reproduce every load-bearing claim above. No other repository is required or referenced.
+This package's own ten scripts plus this document are sufficient to reproduce every load-bearing claim above. No other repository is required or referenced.
 
 ---
 
