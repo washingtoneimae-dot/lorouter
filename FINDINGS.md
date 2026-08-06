@@ -165,6 +165,34 @@ stated conditions), **open** (hypothesis, not yet validated).
     direction verified, magnitude bounded by base-model quality.
     *(bounded, `experiments/generation_quality.py`)*
 
+## H. Adapter-pool scaling (2026-08-06, canonical run)
+
+Grounded in the measured real-LoRA profile shapes (F5 loss matrix),
+variant profiles = base + Gaussian noise at scale σ; 5 seeds; 92 brick-3
+test queries. Full table in `experiments/results/pool_scaling.csv`.
+
+32. **Pool-size invariance at zero profile noise**: accuracy FLAT at
+    96.74% from N=8 to N=1024 identical variants — duplicating adapter
+    variants costs nothing. *(proven, `experiments/adapter_pool_scaling.py`)*
+33. **The accuracy curve is U-shaped under profile noise, not monotone.**
+    Low variant counts: noise dominates (N=8, σ≥0.05 → 37–40%). Mid
+    counts: more same-domain variants HELP — more lottery tickets for the
+    true domain (N=128, σ=0.05 → 77.4%). Extreme counts: the wrong-domain
+    max-of-N effect decays accuracy again (N=1024, σ=0.20 → 30.4%).
+    Crossover near N=128–512 for σ≥0.05. *(proven)*
+34. **Bonferroni-style compounding does NOT transfer to adapter pools.**
+    Measured false capture is far below naive independence at every
+    point (σ=0.05, N=128: 22.6% measured vs 100% naive) because variants
+    share the domain base profile — correlated errors. v2's
+    independent-gate law is the WORST case, not the adapter-pool case.
+    *(proven)*
+35. **Swap isolation scales**: 0.00% flips on other domains at N=128 and
+    N=512 in noisy pools. *(proven)*
+36. **Profile separation**: min cosine collapses with noise (≈0 at
+    N=1024/σ=0.10; −0.997 at σ=0.20) while mean cosine stays 0.63–0.89 —
+    the domain base profile dominates the mean; extreme-value noise
+    lives in the min. *(proven)*
+
 ---
 
 *Open items, stated as plainly: unseen-task quality at SCALE (the aligned-

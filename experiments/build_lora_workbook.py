@@ -304,6 +304,51 @@ bar(ws, "Generation similarity to reference by adapter",
     ["similarity"], [AMBER], anchor="D4")
 
 # ----------------------------------------------------------------------
+# Adapter-pool scaling (F32-F36)
+# ----------------------------------------------------------------------
+ws = sheet("PoolScaling", "Adapter-pool scaling (F32-F36)",
+           "experiments/adapter_pool_scaling.py: variant profiles = real-LoRA base profiles + Gaussian noise sigma, 5 seeds, 92 brick-3 queries. U-shaped accuracy: sigma=0 flat at 96.7%; noise -> mid-N helps, extreme-N decays.",
+           ["N", "sigma", "accuracy", "false_capture", "sep_min", "sep_mean"],
+           [
+               [8, 0.00, 0.9674, 0.0326, 0.993, 0.996],
+               [32, 0.00, 0.9674, 0.0326, 0.993, 0.997],
+               [128, 0.00, 0.9674, 0.0326, 0.993, 0.997],
+               [512, 0.00, 0.9674, 0.0326, 0.993, 0.997],
+               [1024, 0.00, 0.9674, 0.0326, 0.993, 0.997],
+               [8, 0.05, 0.3957, 0.6043, 0.902, 0.964],
+               [32, 0.05, 0.5978, 0.4022, 0.846, 0.968],
+               [128, 0.05, 0.7739, 0.2261, 0.778, 0.968],
+               [512, 0.05, 0.7304, 0.2696, 0.743, 0.968],
+               [1024, 0.05, 0.6565, 0.3435, 0.715, 0.968],
+               [8, 0.10, 0.3870, 0.6130, 0.688, 0.883],
+               [32, 0.10, 0.4391, 0.5609, 0.431, 0.886],
+               [128, 0.10, 0.6630, 0.3370, 0.283, 0.887],
+               [512, 0.10, 0.4391, 0.5609, 0.021, 0.887],
+               [1024, 0.10, 0.4761, 0.5239, -0.065, 0.885],
+               [8, 0.20, 0.3717, 0.6283, 0.061, 0.641],
+               [32, 0.20, 0.3804, 0.6196, -0.479, 0.639],
+               [128, 0.20, 0.3891, 0.6109, -0.827, 0.642],
+               [512, 0.20, 0.2130, 0.7870, -0.982, 0.635],
+               [1024, 0.20, 0.3043, 0.6957, -0.997, 0.630],
+           ])
+for r in range(5, 25):
+    ws.cell(row=r, column=3).number_format = "0.00%"
+    ws.cell(row=r, column=4).number_format = "0.00%"
+lc = LineChart()
+lc.title = "Routing accuracy vs pool size (by sigma)"
+lc.style = 12
+lc.height = 9
+lc.width = 22
+for i, sig in enumerate([0.00, 0.05, 0.10, 0.20]):
+    start = 5 + i * 5
+    data = Reference(ws, min_col=3, min_row=start, max_row=start + 4)
+    lc.add_data(data, titles_from_data=False)
+    lc.series[-1].tx = openpyxl.chart.series.SeriesLabel(v=f"sigma={sig}")
+cats = Reference(ws, min_col=1, min_row=5, max_row=9)
+lc.set_categories(cats)
+ws.add_chart(lc, "H4")
+
+# ----------------------------------------------------------------------
 # Eight adapter
 # ----------------------------------------------------------------------
 ws = sheet("EightAdapter", "Eight-adapter pool (2/domain)",

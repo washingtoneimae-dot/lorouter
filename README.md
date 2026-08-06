@@ -44,10 +44,14 @@ Research prototype. Three layers of verification, all honest about scope
    by adapter diversity; swap isolation scales (F15–F18).
 6. Latency spike: selection policy sub-millisecond at 10k adapters
    (F30).
+7. Adapter-pool scaling to 1024 adapters (F32–F36): flat 96.74% at zero
+   profile noise; U-shaped under noise; Bonferroni-style compounding does
+   NOT transfer to adapter pools (correlated variants); swap isolation
+   0.00% at N=128/512.
 
-Full record: FINDINGS.md (31 numbered findings), REVIEW.md (significance
+Full record: FINDINGS.md (36 numbered findings), REVIEW.md (significance
 against 2026 trends + gap-closure status), experiments/lorouter_results.xlsx
-(14 sheets, 11 charts, built by experiments/build_lora_workbook.py).
+(15 sheets, 12 charts, built by experiments/build_lora_workbook.py).
 
 ## Verified benchmark (experiments/benchmark.py, 5 seeds)
 

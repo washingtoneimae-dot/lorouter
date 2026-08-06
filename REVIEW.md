@@ -122,12 +122,24 @@ All five gaps named in §3 were closed in one pass; findings F26–F31:
    semantic similarity; +0.45pp), with visible domain-plausible
    differentiation in samples (F31). Margin is small at 135M scale —
    direction verified, magnitude bounded by base-model quality.
+6. **The 1000+-adapter scaling test** (F32–F36) — the settling question
+   answered: pool size per se is NOT the failure driver. At zero profile
+   noise, accuracy is flat at 96.74% from 8 to 1024 adapters. Under
+   noise the curve is U-shaped (variant multiplicity helps; extreme-N
+   max-of-N decays), and — the key negative-result law — Bonferroni-style
+   compounding does NOT transfer to adapter pools: measured false capture
+   is far below naive independence because variants share the domain base
+   profile (correlated errors). Swap isolation scales: 0.00% flips at
+   N=128 and N=512. The design rule: keep variant profiles correlated
+   with the domain base and the router is pool-size-robust.
 
 Revised verdict: the branch now stands at v2-grade evidence depth for
-everything it claims at mechanism and integration level. The remaining
-open items are honest and bounded: 1000+-adapter scale (LORAUTER's
-headline), the serving-stack hook itself, and generation quality on a
-stronger base model.
+everything it claims at mechanism, integration, and scaling level — and it
+has produced a scaling law v2 does not have (adapter-pool false capture
+does not follow the independent-gate compounding model). Remaining open
+items are bounded and specific: a REAL 1000+-adapter pool (the scaling
+test is stand-in, grounded in real profile shapes), the serving-stack
+hook itself, and generation quality on a stronger base model.
 
 ## 5. What the review says to do next (priority order)
 
