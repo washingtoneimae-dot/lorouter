@@ -264,6 +264,7 @@ ws = sheet("ModelScale", "Model-size + seed invariance",
            [
                ["SmolLM2-135M", "42, 7, 2026", "96.4 / 96.4 / 96.4", "1/4 each"],
                ["SmolLM2-360M", "42", "96.4%", "2/4"],
+               ["SmolLM2-135M, 6 domains (v3 corpus, F42)", "42", "95.7% (402/420)", "6/6"],
            ])
 ws = sheet("Latency", "Selection-policy latency spike",
            "experiments/latency_spike.py, warm mean of 1000 queries. Policy is sub-ms at any realistic pool size (F30).",

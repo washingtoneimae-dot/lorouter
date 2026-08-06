@@ -92,13 +92,14 @@ default corpus), profiled by answer-conditional calibration loss:
 - **Routing accuracy: 96.4% (54/56)** — identical to the stand-in
   benchmark, and robust across two profile metrics (question-only loss and
   answer-conditional loss both route at 96.4%).
-- **Adapter differentiation: partial (2/4 diagonal)**. The code adapter
-  and the education adapter are lowest on their own domains; the finance
-  and law adapters are both lowest on code — the base model's strong code
-  priors make code the easiest domain for every adapter. This is a
-  base-model property, not a router failure; it is stated because it
-  bounds what routing can do: profiles are only as separable as the
-  adapters beneath them.
+- **Adapter differentiation: 2/4 diagonal at 62 QA pairs/domain — and
+  6/6 at ~300 QA pairs/domain (F42).** At the original training volume
+  the code adapter and the education adapter were lowest on their own
+  domains while finance/law favored code — the base model's strong code
+  priors. Re-run on the v3 corpus with ~5x the training data, every
+  adapter is lowest on its own domain (medicine 0.55 vs 2.1+ elsewhere).
+  The differentiation bound was data volume, not base priors (revises
+  the earlier reading in FINDINGS F7/F8).
 - Mechanism verdict: the full chain (real LoRA → real losses → profiles →
   cosine selection) works end-to-end.
 

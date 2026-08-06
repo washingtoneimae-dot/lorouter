@@ -228,6 +228,17 @@ cross-domain pairings (including 4- and 6-way examples). Splits
 41. **Addition flips at v3 size: 7** (was 0 at 664 examples) — the
     six-domain space presses harder on the profiler; small, real, and
     the §6.3 gated fix is exactly its remedy. *(proven)*
+42. **Six-domain real-LoRA scale-up: 95.7% routing with 6/6 diagonal
+    dominance.** Six adapters (135M, rank 8, 10 epochs, 230–300 QA
+    pairs/domain from v3): routing 95.7% (402/420; per-domain
+    93.3–98.4%; random floor 16.7%) — the 4-domain 96.4% holds within
+    ~1 point as the pool and domain space grow. The loss matrix is now
+    fully diagonal (every adapter lowest on its own domain, e.g.
+    medicine 0.55 on medicine vs 2.1+ elsewhere). **This revises the
+    differentiation bound in F7/F8**: it was a data-volume bound, not a
+    base-model-priors bound — at ~5x training data per adapter, the
+    code-prior effect disappears. *(bounded,
+    `experiments/real_lora_six_domain.py`)*
 
 ---
 

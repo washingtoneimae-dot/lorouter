@@ -49,8 +49,11 @@ Research prototype. Three layers of verification, all honest about scope
    profile noise; U-shaped under noise; Bonferroni-style compounding does
    NOT transfer to adapter pools (correlated variants); swap isolation
    0.00% at N=128/512.
+8. Six-domain real-LoRA scale-up on the v3 corpus (F42): 95.7% routing
+   with 6/6 diagonal dominance — differentiation is complete at ~300 QA
+   pairs/domain (revises the F7/F8 base-prior bound: it was data volume).
 
-Full record: FINDINGS.md (41 numbered findings), REVIEW.md (significance
+Full record: FINDINGS.md (42 numbered findings), REVIEW.md (significance
 against 2026 trends + gap-closure status), experiments/lorouter_results.xlsx
 (15 sheets, 12 charts, built by experiments/build_lora_workbook.py).
 
