@@ -97,6 +97,8 @@ theory → TECHNICAL.md (inherited from v2).
                            practice, honest limits, roadmap
       REVIEW.md            internal significance review vs current trends
                            (2026 landscape, positioning, risks, priorities)
+      paper/               ArXiv submission skeleton (abstract + section
+                           structure, assembled from the docs above)
       TECHNICAL.md         parent suite's technical document (v2 branch,
                            inherited): swap isolation, addition problem,
                            calibration, prior-art acknowledgment
