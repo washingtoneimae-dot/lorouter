@@ -172,13 +172,29 @@ theory → TECHNICAL.md (inherited from v2).
                            vs clean+boundary gate calibration, p99/p95
 
     corpus/                the moat calibration foundation
-      moat_brick3.jsonl/.csv   current corpus: v3 — 3,010 examples,
+      moat_brick3.jsonl        CURRENT corpus: v3 — 3,010 examples,
                            6 domains (finance/law/code/education/medicine/
                            psychology), 220 boundary examples, Kenyan
                            context, splits 1673/807/530 (user-built
-                           2026-08-06; bricks 1-2 + pre-v3 brick 3 in git
-                           history)
-      moat_brick3_crossdomain.csv  flat export of the same corpus
+                           2026-08-06)
+      moat_brick3_crossdomain.csv  flat CSV export of moat_brick3.jsonl
+                           (same 3,010 rows, same splits)
+      moat_brick4_adapted.csv  v3 train split through Adaption Adaptive
+                           Data (2026-08-27): 1,117 enhanced QA pairs,
+                           D→B grade — prompt + enhanced_completion
+                           (training-signal upgrade; F43)
+      moat_telecom_domain.csv   5G-NR/telecom domain (2026-08-27): 343 QA
+                           pairs (299 Featherless-generated + 44 Adaption
+                           enhanced, deduped), F42-scale — 9-domain pool
+      moat_brick1.csv/.jsonl    historical: first brick (3 domains), kept
+                           for evidence chain (loader default is brick 2)
+      moat_brick2.csv/.jsonl    historical: second brick (4 domains),
+                           loader's DEFAULT_CORPUS — kept for evidence
+                           chain (F1–F18 used it)
+      moat_brick3.csv        STALE — pre-v3 brick (664 rows, brick2-* IDs,
+                           v2 tag). Superseded by moat_brick3.jsonl; kept
+                           only as a historical artifact. Do NOT use for
+                           new experiments.
 
     assets/                media
       profile-moe-demo.mp4 parent suite's 3-minute demo video (inherited)
