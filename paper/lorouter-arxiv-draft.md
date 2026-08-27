@@ -1,9 +1,11 @@
 # Draft — ArXiv submission skeleton (lorouter)
 
 Status: draft for review, assembled 2026-08-06 from REVIEW.md + FINDINGS.md
-+ TECHNICAL.md (lorouter branch, github.com/washingtoneimae-dot/lorouter). Every number below
-is verified by a runnable script in the repo (F-numbers refer to
-FINDINGS.md). Nothing here is claimed beyond the evidence.
++ TECHNICAL.md (lorouter branch, github.com/washingtoneimae-dot/lorouter), updated
+2026-08-27 with the external data-moat pipeline (F43–F46, §4/§5 additions
+below). Every number below is verified by a runnable script in the repo
+(F-numbers refer to FINDINGS.md). Nothing here is claimed beyond the
+evidence. Live status: `experiments/adaption/STATUS.md`.
 
 ---
 
@@ -106,13 +108,26 @@ selection-by-retrieval does not characterize.
   context; splits 1673/807/530). Boundary-dense calibration design;
   boundary-hardness validation (TF-IDF classifier 94.0% clean / 0.0%
   boundary — boundary examples are genuinely dual-domain).
+- **External data-moat pipeline (2026-08-27, F43–F46)**: the v3 train
+  split (1,673 rows) through Adaption Adaptive Data → 1,117 enhanced QA
+  pairs (platform grade D→B, +87.5%; `corpus/moat_brick4_adapted.csv`),
+  where `enhanced_completion` carries model-generated, domain-grounded
+  answers. Three external real-world domains imported and adapted:
+  agriculture (500 rows), fintech (200), 5G-NR/telecom (343 after
+  generated-completion lift; `corpus/moat_telecom_domain.csv`). 420
+  held-out v3 test questions paired with independent reference answers
+  (Featherless, per-domain prompts, 0 failures, ~$0.04) for the
+  generation-quality arm. Full record + cost ledger:
+  `experiments/adaption/STATUS.md`.
 - Stand-in machinery: TF-IDF+SVD and bge-small-en-v1.5 feature paths;
   specialist classifiers as adapter stand-ins; 5 seeds; protocols per
   script (benchmark.py, semantic_embeddings.py).
 - Real-LoRA protocol: SmolLM2-135M/360M, rank 8, 10 epochs, 62–300 QA
   pairs per domain (brick 2 / v3), answer-conditional profiles,
   deterministic seeds; GPU nondeterminism disclosed (pattern-level
-  reproducibility).
+  reproducibility). Plus a 0.8B joint-retrain baseline (Qwen3.5-0.8B
+  LoRA r16/α32, 1 epoch on the 1,117 enhanced pairs — the modernized
+  counterfactual, F44).
 - Metrics: routing accuracy (domain-level), false capture, swap-isolation
   flip counts, per-domain breakdowns, oracle agreement, semantic
   similarity to reference for generation quality, latency.
@@ -145,6 +160,16 @@ selection-by-retrieval does not characterize.
   independent-gate model only for distinct-domain additions.
 - **R5 — Latency.** Selection policy sub-millisecond at 10,000 adapters:
   profiling 1.14 ms, cosine 17 µs → 380 µs (F30).
+- **R6 — External data-moat pipeline (2026-08-27, F43–F46).** The
+  calibration foundation is no longer only synthetic-template: the v3
+  train split adapted through a hosted data-optimization pipeline
+  (D→B, +87.5%), three real-world external domains imported
+  (agriculture/fintech/telecom), and a 0.8B joint-retrain baseline
+  trained on the enhanced pairs (F44) as the modernized counterfactual.
+  Corpus-level learned-router preview: 96.4% on the held-out test
+  (F46), reproducing the F5 tie at corpus level vs profile routing
+  95.7% (F42). The 9-domain real-adapter benchmark — the strongest form
+  of the central claim — is the pending next step.
 
 ### 6. Discussion
 - The differentiator argument (per review): raw embedding similarity is
@@ -167,7 +192,9 @@ selection-by-retrieval does not characterize.
 - Generation quality on a stronger base model (the 135M margin is
   small, F31).
 - Corpus: synthetic-template English, six domains; no human review pass,
-  no Swahili/sheng.
+  no Swahili/sheng. (Partially addressed 2026-08-27: enhanced completions
+  and three real-world external domains added, F43–F46; the 9-domain
+  real-adapter benchmark is pending.)
 - Zero-parameter scope is the selection policy; the query profiler is a
   trained classifier.
 
@@ -189,16 +216,21 @@ selection-by-retrieval does not characterize.
 - F3: Latency curve 4 → 10,000 adapters.
 
 ## Submission checklist (before ArXiv)
-1. Decide: 4-domain numbers (98.2% semantic) or run the 6-domain
+1. **Run the 9-domain real-adapter benchmark** (the pending R6 step):
+   profile vs learned vs centroid vs random on the 9-domain pool
+   (F43–F46's routing comparison) — the strongest form of the central
+   claim; publish its numbers here.
+2. Decide: 4-domain numbers (98.2% semantic) or run the 6-domain
    semantic arm first (recommended — one ~5 min run, makes R1
    consistent with the 6-domain story).
-2. Humanize one corpus slice (~50 examples) to show samples in the
+3. Humanize one corpus slice (~50 examples) to show samples in the
    appendix (currently zero human review — the corpus is machine-
    generated; showing examples is fine, claiming review is not).
-3. Exact claim wording audit: "zero-parameter" (selection layer),
+4. Exact claim wording audit: "zero-parameter" (selection layer),
    "98.2%" (4 domains, brick 2), "0.00%" (structural, all runs),
    F34 (σ=0.05, N=128).
-4. Endorsement/affiliation logistics for ArXiv submission (independent
+5. Endorsement/affiliation logistics for ArXiv submission (independent
    researcher; 17; needs endorsement or a co-submitter).
-5. License/attribution: MIT repo; cite the parent suite's TECHNICAL.md
-   lineage honestly in Related Work.
+6. License/attribution: MIT repo; cite the parent suite's TECHNICAL.md
+   lineage honestly in Related Work; external-data licenses (5G set
+   CC-BY-NC — paper/demo only).

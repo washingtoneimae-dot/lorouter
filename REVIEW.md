@@ -141,7 +141,33 @@ items are bounded and specific: a REAL 1000+-adapter pool (the scaling
 test is stand-in, grounded in real profile shapes), the serving-stack
 hook itself, and generation quality on a stronger base model.
 
-## 5. What the review says to do next (priority order, status 2026-08-06)
+## 4b. Gap-closure status (2026-08-27) — external data-moat pipeline
+
+One further gap class closed in the 2026-08-27 session (F43–F46; full
+record `experiments/adaption/STATUS.md`):
+
+7. **Corpus quality / coverage side** — the calibration foundation is no
+   longer only synthetic-template. The v3 train split went through a
+   hosted data-optimization pipeline (Adaption Adaptive Data): 1,117
+   enhanced QA pairs, platform grade D→B (+87.5%), committed as
+   `corpus/moat_brick4_adapted.csv`. Three real-world external domains
+   were imported and adapted (agriculture 500, fintech 200, 5G-NR/telecom
+   343 after a generated-completion lift). This is the first concrete
+   step of the "coverage-side build-out" flagged in TECHNICAL.md §9.
+8. **Modernized joint-retrain counterfactual** — a 0.8B joint baseline
+   (Qwen3.5-0.8B LoRA r16/α32, 1 epoch on the enhanced pairs; F44)
+   replaces the old small-model joint as the thing the pool must beat.
+9. **Learned-router corpus-level preview** — LogReg/TF-IDF on the v3
+   train split scores 96.4% on the held-out test (F46), reproducing the
+   F5 tie at corpus level vs profile routing's 95.7% (F42). The
+   real-LoRA learned-router arm at 9 domains is the pending benchmark.
+
+What remains open (unchanged): the REAL 1000+-adapter pool, the
+serving-stack hook, generation quality on a stronger base model, and now
+explicitly the 9-domain real-adapter routing benchmark (profile vs
+learned vs centroid vs random) that F43–F46's pending comparison needs.
+
+## 5. What the review says to do next (priority order, status 2026-08-27)
 
 1. ~~Close the unseen-task gap~~ — DONE at the aligned-adapter level
    (F13/F31); a real 1000+-adapter pool with aligned adapters remains.
@@ -152,7 +178,13 @@ hook itself, and generation quality on a stronger base model.
 4. ~~Serving-layer integration spike (latency)~~ — policy latency DONE
    (F30); the vLLM/LoRAX hook itself remains.
 5. ~~Pool-scaling test~~ — DONE to 1024 stand-in adapters (F32–F36).
-6. Keep the evidence discipline. Every finding stays script-backed; the
+6. ~~External data-moat pipeline~~ — FIRST STEP DONE (2026-08-27, F43–F46):
+   enhanced corpus, 3 external domains, 0.8B joint baseline, learned-router
+   corpus preview; see §4b.
+7. **9-domain real-adapter benchmark** — the pending R6 comparison: profile
+   vs learned vs centroid vs random on real LoRAs over the 9-domain pool;
+   publishes the routing numbers that promote F43–F46.
+8. Keep the evidence discipline. Every finding stays script-backed; the
    open items (real 1000+ pool, serving hook, stronger-model generation
    quality, human-reviewed/Swahili corpus) stay open until they are not.
 
