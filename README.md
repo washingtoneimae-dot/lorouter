@@ -99,7 +99,7 @@ theory → TECHNICAL.md (inherited from v2).
       README.md            this file: status, results, limits, map
       LOROUTER.md          technical documentation of the adapter-selection
                            capability (mechanism, evidence tiers, limits)
-      FINDINGS.md          all 25 numbered findings, each with its source
+      FINDINGS.md          all 46 numbered findings, each with its source
                            script (the complete evidence record)
       possibility.md       vision: use cases, products, engineering
                            practice, honest limits, roadmap
