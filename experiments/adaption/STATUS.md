@@ -40,7 +40,13 @@ the numbers exist.
    (r16/α32), 1 epoch / 23 steps, final loss 1.418, eval loss 1.406,
    **best win rate 0.4095**, model card included. The modernized
    joint-retrain counterfactual (successor of `moat_profile_addition.py`).
-7. **Infra**: Netlify MCP configured; HuggingFace CLI + token (`washi254`);
+7. **Learned-router preview (corpus level)**: LogReg on TF-IDF, trained on
+   v3 train split only, evaluated on the held-out test (420): **96.4%
+   accuracy** (per-domain 92.0–98.7%; random floor 17.9%) — reproduces the
+   F5 tie at corpus level and sits at/above the F42 profile-routing 95.7%.
+   The real-LoRA learned-router arm is part of the pending 9-domain
+   benchmark.
+8. **Infra**: Netlify MCP configured; HuggingFace CLI + token (`washi254`);
    GitHub fine-grained PAT in `~/.hermes/.env` (never committed).
 
 ## In flight
