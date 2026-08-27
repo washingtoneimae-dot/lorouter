@@ -161,7 +161,7 @@ Use case §2.3 productized; smallest surface, cleanest privacy story.
 - Corpus is synthetic-template English; no human review pass, no
   Swahili/sheng coverage.
 
-## 7. Roadmap (status as of 2026-08-06)
+## 7. Roadmap (status as of 2026-08-27)
 
 1. ~~Semantic embeddings for the text arm~~ — DONE (F28/F29): profile
    routing 98.2%, beats centroid; the F12 lexical artifact gone.
@@ -172,7 +172,16 @@ Use case §2.3 productized; smallest surface, cleanest privacy story.
    the vLLM/LoRAX integration hook itself remains open.
 4. ~~Generation-quality evaluation~~ — DONE at 135M (F31); a stronger
    base model is the remaining magnitude question.
-5. Human-reviewed corpus brick; Swahili/sheng coverage — open.
+5. ~~External data-moat addition pipeline~~ — FIRST STEP DONE (2026-08-27):
+   v3 corpus adapted via Adaption Adaptive Data (1,117 enhanced pairs,
+   `corpus/moat_brick4_adapted.csv`), joint-retrain baseline trained at 0.8B
+   (`experiments/adaption/checkpoint/joint-baseline/`), 420 held-out
+   reference answers generated via Featherless, learned-router preview
+   96.4% vs profile 95.7%. Full record: `experiments/adaption/STATUS.md`.
+6. **9-domain pool benchmark** — next: normalize v3 + agriculture + fintech
+   + 5G into the corpus schema, train per-domain LoRAs, run profile vs
+   learned vs centroid vs random on real adapters.
+7. Human-reviewed corpus brick; Swahili/sheng coverage — open.
 
 ---
 

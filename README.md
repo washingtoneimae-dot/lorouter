@@ -136,6 +136,11 @@ theory → TECHNICAL.md (inherited from v2).
       build_lora_workbook.py  regenerates lorouter_results.xlsx
       lorouter_results.xlsx   canonical tables + charts (15 sheets)
       results/             raw CSV outputs (pool_scaling.csv)
+      adaption/            external data-moat pipeline (2026-08-27):
+                           STATUS.md (living record), adapted_data/ (external
+                           domain adaptations), eval_references/ (420 held-out
+                           answers), checkpoint/joint-baseline/ (Qwen3.5-0.8B
+                           LoRA), learned_router_preview.py (96.4% corpus-level)
 
     scripts/               parent-suite + moat scripts (inherited from v2
                            plus this line's additions)

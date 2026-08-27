@@ -228,6 +228,8 @@ Since each new domain's gate is trained fully independently (no joint retraining
 
 **Practical constraint, stated honestly**: building a genuinely standardized, well-populated dataset bank across many domains — with the boundary-example density §8 shows is required for meaningful calibration — is a substantial undertaking, not a weekend project, especially pre-team and pre-traction. The mechanism-level validation above (8 real adapters, 1024 stand-in) is done; the coverage-side build-out (the bank itself) remains the open, large part.
 
+**Data-moat build-out via external pipeline (2026-08-27, in progress)**: the first concrete step of the coverage-side build-out now exists — a hosted data-optimization + training pipeline (Adaption Adaptive Data + AutoScientist on NVIDIA GPUs, plus Featherless for reference-answer generation) applied to the moat corpus. Verified so far: (a) v3 corpus adapted → 1,117 enhanced QA pairs (platform grade D→B, +87.5%), committed as `corpus/moat_brick4_adapted.csv`; (b) three external real-world domains imported and adapted (agriculture 500 rows, fintech 200, 5G/telecom 45 — the 5G thinness being addressed via generated completions); (c) a joint-retrain baseline at 0.8B scale (Qwen3.5-0.8B LoRA, `experiments/adaption/checkpoint/joint-baseline/`) as the modernized counterfactual for the pool; (d) a corpus-level learned-router preview: 96.4% (LogReg/TF-IDF, held-out test) vs 95.7% F42 profile routing. The full 9-domain pool benchmark (profile vs learned vs centroid vs random, real LoRAs) is the pending next step — full record: `experiments/adaption/STATUS.md`.
+
 ---
 
 ## 10. Achievements Mapped to Architecture (vs. Traditional MoE)
