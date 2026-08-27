@@ -147,6 +147,40 @@ Results of both: see `experiments/lora_exemplar_routing.py` and
 `experiments/lorouter_results.xlsx` (built by
 `experiments/build_lora_workbook.py`).
 
+### 3.5 External data-moat pipeline (2026-08-27, F43–F46)
+
+A hosted data-optimization + training pipeline (Adaption Adaptive Data +
+AutoScientist on NVIDIA GPUs; Featherless for reference-answer generation)
+applied to the moat corpus — the first concrete step of the coverage-side
+build-out (TECHNICAL.md §9). Full record: `experiments/adaption/STATUS.md`.
+
+- **Enhanced calibration foundation (F43)**: the v3 train split (1,673
+  rows) through Adaptive Data → 1,117 enhanced QA pairs, platform grade
+  D→B (+87.5%), committed as `corpus/moat_brick4_adapted.csv`. The
+  `enhanced_completion` column carries model-generated, domain-grounded
+  answers with Kenyan context — the training-signal upgrade over the
+  synthetic templates.
+- **Modernized joint-retrain counterfactual (F44)**: a 0.8B joint
+  baseline (Qwen3.5-0.8B LoRA r16/α32, 1 epoch on the 1,117 enhanced
+  pairs, `experiments/adaption/checkpoint/joint-baseline/`) — the thing
+  the per-domain pool must beat, at a scale beyond the old 135M joint
+  (which `moat_profile_addition.py` used, 184 flips at the old size).
+- **External real-world domains (F45)**: agriculture (500 rows), fintech
+  (200), 5G-NR/telecom (343 after a Featherless completion lift to reach
+  F42 scale — `corpus/moat_telecom_domain.csv`). The 9-domain pool's new
+  adapters are grounded in real external data, not synthetic generation.
+- **Learned-router corpus-level preview (F46)**: LogReg on TF-IDF
+  (v3 train split only) scores 96.4% on the held-out test — reproducing
+  the F5 tie at corpus level vs profile routing's 95.7% (F42).
+- **Eval references**: 420 held-out v3 test questions paired with
+  independent Featherless reference answers (per-domain prompts, 0
+  failures, ~$0.04) — the generation-quality scoring set (F31-style),
+  ready for the 9-domain benchmark.
+
+The pending step is the **9-domain real-adapter routing benchmark**
+(profile vs learned vs centroid vs random on real LoRAs) — the strongest
+form of the central claim.
+
 ---
 
 ## 4. The moat as the adapter-profile factory (the strategic claim)
@@ -155,12 +189,16 @@ Possibility.md §3 proved (synthetic) that a broad calibration foundation
 converts additions into swaps. Lorouter makes that operational for
 adapter pools: **a new adapter enters the router by calibration, not by
 training the router.** The moat corpus (bricks 1–3; brick 3 is now v3 —
-3,010 examples, six domains, 220 boundaries, F37–F41) is the calibration
+3,010 examples, six domains, 220 boundaries, F37–F41; plus the 2026-08-27
+additions: 1,117 enhanced pairs in `moat_brick4_adapted.csv` and the
+343-row telecom domain in `moat_telecom_domain.csv`) is the calibration
 foundation; adapter profiles are minted
 from it. The corpus growth experiment (brick 3, 25% calibration split)
 resolved the p99 threshold degeneracy documented in the parent suite's
 calibration trial — the calibration foundation is now large enough for
-stable threshold behavior at the 99th percentile.
+stable threshold behavior at the 99th percentile. The external pipeline
+(§3.5) is how the moat grows beyond hand-written generation: hosted
+data optimization plus real-world external domains.
 
 This is the defensibility argument stated as engineering: anyone can copy
 the router (it is simple, MIT); nobody can copy a boundary-dense,
@@ -185,7 +223,11 @@ adapter selection cheap, auditable, and swap-safe.
   profile shapes (F32–F36), not with a real pool of that size.
 - Adapter differentiation is bounded by base-model priors (§3.2).
 - The corpus is synthetic-template English; no human review pass, no
-  Swahili/sheng coverage.
+  Swahili/sheng coverage. (Partially addressed 2026-08-27: enhanced
+  completions and three real-world external domains added, F43–F46.)
+- The 9-domain real-adapter routing benchmark — profile vs learned vs
+  centroid vs random on real LoRAs over the 9-domain pool — is pending
+  (the F43–F46 routing comparison).
 
 ---
 
@@ -203,6 +245,7 @@ adapter selection cheap, auditable, and swap-safe.
 ---
 
 *Evidence tiers are load-bearing: §3.1–3.2 are proven as stated, §3.3 is
-stable-but-open, §3.4 is bounded by the experiments it references. The
-scripts are the source of truth; rerun them before quoting these numbers
-elsewhere.*
+stable-but-open, §3.4 is bounded by the experiments it references, §3.5's
+assets are proven as delivered (corpus/checkpoint/scripts all committed)
+with its routing comparison pending. The scripts are the source of truth;
+rerun them before quoting these numbers elsewhere.*
