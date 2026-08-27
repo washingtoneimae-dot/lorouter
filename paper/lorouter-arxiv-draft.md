@@ -1,7 +1,7 @@
 # Draft — ArXiv submission skeleton (lorouter)
 
 Status: draft for review, assembled 2026-08-06 from REVIEW.md + FINDINGS.md
-+ TECHNICAL.md (lorouter branch, fuzzy-octo-couscous). Every number below
++ TECHNICAL.md (lorouter branch, github.com/washingtoneimae-dot/lorouter). Every number below
 is verified by a runnable script in the repo (F-numbers refer to
 FINDINGS.md). Nothing here is claimed beyond the evidence.
 
