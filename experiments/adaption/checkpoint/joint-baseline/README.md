@@ -49,7 +49,12 @@ model = PeftModel.from_pretrained(base, "experiments/adaption/checkpoint/joint-b
 
 ## Honest limits
 
-- Win rate 0.4095 is the platform's eval metric, not a routing benchmark
-  number; generation-quality scoring against the Featherless reference set
+- **Win rate is platform-relative.** 0.4095 is AutoScientist's internal eval
+  metric (target 0.7, 3/3 iterations) on a 0.8B model trained 1 epoch on
+  1,117 pairs — expected to be modest, and not comparable across runs with
+  different models/data/targets. The meaningful comparison is the lorouter
+  routing benchmark (profile pool vs this joint baseline), which is the
+  pending next step.
+- Generation-quality scoring against the Featherless reference set
   (`experiments/adaption/eval_references/`) is pending.
 - One epoch on 1,117 pairs — a mechanism-test baseline, not a product model.
