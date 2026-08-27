@@ -14,7 +14,7 @@ evidence. Live status: `experiments/adaption/STATUS.md`.
 **Calibrated Competence Profiles for Zero-Parameter LoRA Adapter Selection**
 
 (Alternative: "Routing LoRA Adapter Pools by Calibrated Competence
-Profiles". Leading with the representation, not the router — per review.)
+Profiles". Leading with the representation, not the router.)
 
 ## Abstract (draft)
 
@@ -45,7 +45,7 @@ models, synthetic QA corpus), the 1000+-adapter scaling test uses
 stand-in variants grounded in real profile shapes, and no serving-stack
 integration is reported.
 
-## Thesis (one sentence, per review)
+## Thesis (one sentence)
 
 Raw embedding similarity is the obvious approach to adapter selection;
 calibrated competence profiles against a boundary-dense calibration
@@ -149,7 +149,7 @@ selection-by-retrieval does not characterize.
   coverage, not broken routing. Semantic embeddings remove the lexical
   exemplar artifact (F29).
 - **R4 — Bonferroni compounding does not transfer to correlated adapter
-  pools (own section, per review; the most novel contribution).**
+  pools (own section; the most novel contribution).**
   Independent-gate compounding (§7 of TECHNICAL.md) is the worst case;
   measured false capture at 128 correlated variants: 22.6% vs 100% naive
   (F34). The accuracy curve is U-shaped in pool size (variant
@@ -172,7 +172,7 @@ selection-by-retrieval does not characterize.
   of the central claim — is the pending next step.
 
 ### 6. Discussion
-- The differentiator argument (per review): raw embedding similarity is
+- The differentiator argument: raw embedding similarity is
   the obvious approach and is documented elsewhere as insufficiently
   disambiguating; calibrated competence profiles against a boundary-dense
   moat outperform it, and the isolation properties are unique to the
@@ -184,7 +184,7 @@ selection-by-retrieval does not characterize.
   foundation.
 - What the scaling law means for serving practice.
 
-### 7. Limitations (as stated in REVIEW.md — reviewers want exactly this)
+### 7. Limitations
 - Real 1000+-adapter pool: the scaling test is stand-in, grounded in
   real profile shapes (F32–F36).
 - vLLM/LoRAX integration hook: policy latency measured standalone (F30),
