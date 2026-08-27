@@ -242,10 +242,45 @@ cross-domain pairings (including 4- and 6-way examples). Splits
 
 ---
 
+## J. External data-moat pipeline (2026-08-27, canonical run)
+
+A hosted data-optimization + training pipeline (Adaption Adaptive Data +
+AutoScientist on NVIDIA GPUs; Featherless for reference-answer generation)
+applied to the moat corpus. Full reproducible record:
+`experiments/adaption/STATUS.md` and `experiments/adaption/adaption_pipeline.py`.
+
+43. **v3 corpus adapted externally: D→B (+87.5%)**. 1,117 enhanced QA pairs
+    (platform dedup/filter from 1,673 train rows) across all 6 domains,
+    committed as `corpus/moat_brick4_adapted.csv`. The `enhanced_completion`
+    column carries model-generated, domain-grounded answers with Kenyan
+    context — the training-signal upgrade over the synthetic templates.
+    *(proven, file committed and verified)*
+44. **Joint-retrain baseline at 0.8B scale trained on enhanced pairs**:
+    Qwen3.5-0.8B LoRA (r16/α32), 1 epoch/23 steps on the 1,117 enhanced
+    pairs, final loss 1.418 / eval loss 1.406, platform best win rate 0.4095
+    (target 0.7; 3/3 iterations). This is the modernized joint-retrain
+    counterfactual — successor of the `moat_profile_addition.py` joint
+    model. *(proven checkpoint: `experiments/adaption/checkpoint/
+    joint-baseline/`; the routing comparison is the pending step)*
+45. **Three external real-world domains imported and adapted**: 5G-NR QA
+    (telecom, 45 enhanced rows after platform filter), agriculture QA (500),
+    personal-finance-africa (fintech, 200) — HuggingFace → Adaption, held
+    under `experiments/adaption/adapted_data/`. Licenses: 5G CC-BY-NC
+    (non-commercial), agriculture Apache-2.0, fintech CC-BY-4.0. *(proven;
+    telecom thinness being addressed via generated completions)*
+46. **Learned-router corpus-level preview: 96.4% (405/420)**. LogReg on
+    TF-IDF, trained on v3 train split only, evaluated on the held-out test
+    (per-domain 92.0–98.7%; random floor 17.9%) — reproduces the F5 tie at
+    corpus level and sits at/above the F42 profile-routing 95.7%. The
+    real-LoRA learned-router arm is part of the pending 9-domain benchmark.
+    *(proven at corpus level, `experiments/adaption/learned_router_preview.py`)*
+
+---
+
 *Open items, stated as plainly: unseen-task quality at SCALE (the aligned-
 adapter case is verified — F13, F31 — but not at LORAUTER's 1000+-adapter
 scale); the vLLM/LoRAX integration hook itself (policy latency is
 measured, F30, but not inside a serving stack); generation-quality at a
-stronger base model (the 135M margin is small, F31); and the corpus
-remains synthetic-template English — no human review pass, no
-Swahili/sheng.*
+stronger base model (the 135M margin is small, F31); the corpus remains
+synthetic-template English — no human review pass, no Swahili/sheng; and
+the 9-domain pool benchmark (F43–F46's pending routing comparison).*

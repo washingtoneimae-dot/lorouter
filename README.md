@@ -52,8 +52,16 @@ Research prototype. Three layers of verification, all honest about scope
 8. Six-domain real-LoRA scale-up on the v3 corpus (F42): 95.7% routing
    with 6/6 diagonal dominance — differentiation is complete at ~300 QA
    pairs/domain (revises the F7/F8 base-prior bound: it was data volume).
+9. External data-moat pipeline (2026-08-27, F43–F46): v3 corpus adapted
+   via Adaption Adaptive Data (1,117 enhanced pairs, D→B grade, committed
+   as `corpus/moat_brick4_adapted.csv`); three external real-world domains
+   imported and adapted (agriculture 500, fintech 200, 5G/telecom 45);
+   joint-retrain baseline at 0.8B scale (`experiments/adaption/checkpoint/
+   joint-baseline/`, best win rate 0.4095); corpus-level learned-router
+   preview 96.4% vs profile 95.7% (F46). 9-domain pool benchmark is the
+   pending next step. Full record: `experiments/adaption/STATUS.md`.
 
-Full record: FINDINGS.md (42 numbered findings), REVIEW.md (significance
+Full record: FINDINGS.md (46 numbered findings), REVIEW.md (significance
 against 2026 trends + gap-closure status), experiments/lorouter_results.xlsx
 (15 sheets, 12 charts, built by experiments/build_lora_workbook.py).
 
