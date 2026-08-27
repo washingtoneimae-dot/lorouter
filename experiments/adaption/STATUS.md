@@ -1,7 +1,8 @@
 # Adaption + Featherless pipeline — status (2026-08-27)
 
-**One-line status:** Adaptive Data runs 4/4 done ✅ · AutoScientist training in
-flight 🟢 · Featherless eval references done ✅ · 9-domain build + benchmark
+**One-line status:** Adaptive Data runs 4/4 done ✅ · AutoScientist training
+**done ✅ (checkpoint committed)** · Featherless eval references done ✅ ·
+5G domain completion generation in flight 🟢 · 9-domain build + benchmark
 not started (next).
 
 This document is a living record: it states what is **done** (verified), what
@@ -34,18 +35,20 @@ the numbers exist.
    prompts (Qwen3-4B FinAdvisor), **0 failures, ~$0.04 total**. This is the
    reference set for the generation-quality eval (F31-style) once the trained
    adapter exists.
-6. **Infra**: Netlify MCP configured; HuggingFace CLI + token (`washi254`);
+6. **AutoScientist joint baseline** (run `e2cdb7be`, succeeded):
+   `experiments/adaption/checkpoint/joint-baseline/` — Qwen3.5-0.8B LoRA
+   (r16/α32), 1 epoch / 23 steps, final loss 1.418, eval loss 1.406,
+   **best win rate 0.4095**, model card included. The modernized
+   joint-retrain counterfactual (successor of `moat_profile_addition.py`).
+7. **Infra**: Netlify MCP configured; HuggingFace CLI + token (`washi254`);
    GitHub fine-grained PAT in `~/.hermes/.env` (never committed).
 
 ## In flight
 
-1. **AutoScientist** (run `e2cdb7be`, dataset `88c24bed`): Qwen3.5-0.8B, LoRA,
-   instruction format, no synthetic augmentation, max 3 iterations — training
-   on the enhanced v3 pairs (prompt → `enhanced_completion`). This is the
-   **modernized joint-retrain baseline** (successor of the
-   `moat_profile_addition.py` joint model). Win rate 0.41 as of writing.
-   Watcher: `lorouter-as-watcher` (systemd, restart-proof) → downloads best
-   checkpoint.
+1. **5G domain completion generation** (Featherless): ~300 fresh telecom QA
+   pairs from the 5G train split (Qwen3-4B FinAdvisor), to lift the telecom
+   domain from the thin 45-row Adaption output to ~300+ rows. Output:
+   `featherless/5g_completions.jsonl` (local), merged into the pool build.
 
 ## Expected end state (planned, not yet proven)
 
