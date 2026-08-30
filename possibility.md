@@ -32,6 +32,7 @@ executable unit, script, prompt, database, or tool**:
 - A **pure system prompt / few-shot template** (zero training required).
 - A **static database / lookup table** (M-Pesa tariff charts, schedules).
 - An **external API / webhook** (live standards search, flight status).
+- A **game engine / asset tool** (shader generators, polycount validators, lore adapters).
 
 **Good fit — each condition tied to evidence, not aspiration:**
 
@@ -111,6 +112,23 @@ this architecture.
 Local profiler + local capability pool (private personal LoRAs, on-device
 Python scripts, local notes). Zero query data egresses for router training;
 the profile matrix lives and updates locally.
+
+### 2.7 Interactive Media, Game Development & Asset Pipelines (designed)
+Game development and 3D virtual worlds represent the ultimate stress test
+for fragmented, modular, asset-heavy AI dispatch:
+- **Modular Faction Lore & Dialogue**: Writers curate distinct LoRA adapters
+  per in-game faction, dialect, or culture. Updating Faction A's lore is an
+  isolated swap that structurally cannot break Faction B's dialogue (0.00%
+  collateral).
+- **Neuro-Symbolic Asset Validation**: Creative text/procedural prompts route
+  to creative LoRAs, while technical asset tasks (e.g., HLSL shader generation,
+  Blender/Houdini vertex budget checks, glTF format validation) route directly
+  to deterministic Python/engine scripts in the same pool.
+- **Runtime NPC Scaling on Small Models**: Rather than running expensive 7B+
+  models that monopolize console/PC GPU VRAM, a game engine runs a single
+  lightweight 0.8B base model alongside hundreds of 5MB NPC personality
+  adapters, dynamically swapped in <1 ms as the player approaches each
+  character in the world.
 
 ---
 
